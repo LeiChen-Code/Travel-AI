@@ -10,6 +10,25 @@ const config: Config = {
   theme: {
   	extend: {
   		colors: {
+			// 修改样式
+			black:{
+				1:'#000000',
+				2:'#232323',
+				3:'#71788B',
+			},
+			gray:{
+				1:'#D2D0D0',
+				2:'#ABABAB',
+				3:'#FAFAFA',
+				4:'#5E5E5E',
+			},
+			white:{
+				1:'#FFFFFF',
+				2:'#FAFAFA'
+			},
+			blue:{
+				1:'#268CFF',
+			},
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
