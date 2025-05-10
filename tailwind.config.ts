@@ -42,11 +42,10 @@ const config = {
 			},
 			primary:'#268CFF',
   		},
-  		borderRadius: {
-  			lg: 'var(--radius)',
-  			md: 'calc(var(--radius) - 2px)',
-  			sm: 'calc(var(--radius) - 4px)'
-  		},
+  		backgroundImage: {
+        	"nav-focus":
+          		"linear-gradient(270deg, rgba(38, 140, 255, 0.06) 0%, rgba(38, 140, 255, 0.00) 100%)",
+      	},
 		keyframes: {
 			"accordion-down": {
 			from: { height: "0" },
