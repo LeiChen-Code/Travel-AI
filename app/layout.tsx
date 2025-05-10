@@ -1,17 +1,32 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { fromJSON } from "postcss";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
+/* 设置字体为 Noto Sans SC */
+const notoSansSC = localFont({
+  src: [
+    {
+      path: "./fonts/NotoSansSC-Light.otf",
+      weight: "300",
+    },
+    {
+      path: "./fonts/NotoSansSC-Regular.otf",
+      weight: "400",
+    },
+    {
+      path: "./fonts/NotoSansSC-Medium.otf",
+      weight: "500",
+    },
+    {
+      path: "./fonts/NotoSansSC-Bold.otf",
+      weight: "700",
+    },
+  ],
+  variable: "--font-noto-sans-sc",
+  display: "swap",
 });
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -24,9 +39,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="zh-CN">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${notoSansSC.variable} font-sans antialiased`}
       >
         {children}
       </body>
