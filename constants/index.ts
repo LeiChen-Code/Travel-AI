@@ -15,3 +15,18 @@ export const sidebarLinks = [
         imgURL: '/icons/file.svg',
     }
 ]
+
+export const travalData = [
+    {
+        id:1,
+        title:"广州之旅",
+        date:"2025/04/08 - 2025/04/10",
+        imgURL:"/images/guangzhou-cover.jpg"
+    },
+    {
+        id:2,
+        title:"厦门之旅",
+        date:"2025/05/02 - 2025/05/05",
+        imgURL:"/images/xiamen-cover.jpg"
+    },
+]

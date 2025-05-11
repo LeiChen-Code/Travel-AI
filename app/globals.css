@@ -26,8 +26,8 @@ body {
     @apply text-16 placeholder:text-16 bg-white-1 border border-gray-300 rounded-[6px] placeholder:text-gray-400 text-gray-800;
   }
 
-  .podcast_grid {
-    @apply grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4;
+  .travel_grid {
+    @apply grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4;
   }
 
   .left_sidebar {

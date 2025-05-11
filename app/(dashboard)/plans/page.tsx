@@ -1,9 +1,11 @@
 import React from 'react'
 
-const PlanDetails = ({params} : {params:{planId : string}}) => {
+const CreatPlan = () => {
   return (
-    <p className='text-black-1'>PlanDetails for {params.planId}</p>
+    <div>
+      <h1 className='text-20 font-bold text-black-1'>生成行程</h1>
+    </div>
   )
 }
 
-export default PlanDetails
+export default CreatPlan
