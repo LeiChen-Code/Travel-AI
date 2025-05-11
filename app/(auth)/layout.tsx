@@ -1,11 +1,13 @@
+import Header from "@/components/Header";
+import Image from "next/image";
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <main>
-        <p className="text-black-2">Header</p>
+    <main className="relative h-screen w-full ">
         {children}
     </main>
   );

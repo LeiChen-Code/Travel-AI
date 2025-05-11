@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import ConvexClerkProvider from "./providers/ConvexClerkProvider";
 
 /* 设置字体为 Noto Sans SC */
 const notoSansSC = localFont({
@@ -45,7 +46,9 @@ export default function RootLayout({
       <body
         className={`${notoSansSC.variable} font-sans antialiased`}
       >
-        {children}
+        <ConvexClerkProvider>
+          {children}
+        </ConvexClerkProvider>
       </body>
     </html>
   );

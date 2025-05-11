@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
+import Link from 'next/link'
 import React from 'react'
 
 const Home = () => {
@@ -33,10 +34,10 @@ const Home = () => {
           </p>
           <div className="flex justify-center md:justify-start space-x-4">
             <Button className="bg-blue-500 hover:bg-blue-700 text-white-1 font-medium py-2 px-16 rounded">
-              注册
+              <Link href="/sign-up">注册</Link>
             </Button>
             <Button className="bg-blue-500 hover:bg-blue-700 text-white-1 font-medium py-2 px-16 rounded">
-              登录
+              <Link href="/sign-in">登录</Link>
             </Button>
           </div>
         </div>
