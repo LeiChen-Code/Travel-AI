@@ -12,8 +12,6 @@ const HistoryPlan = () => {
         <div className='flex gap-3'>
           {/* 搜索行程 */}
           <SearchContent/>
-          {/* 新建行程 */}
-          <CreatePlan/>
         </div>
       </header>
         {/* 行程卡片 */}

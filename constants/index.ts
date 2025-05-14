@@ -1,5 +1,10 @@
 export const sidebarLinks = [
     {
+        route: '/create',
+        label: '新建行程',
+        imgURL: '/icons/add.svg',
+    },
+    {
         route: '/history',
         label: '历史行程',
         imgURL: '/icons/server.svg',

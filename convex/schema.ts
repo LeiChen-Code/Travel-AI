@@ -58,7 +58,6 @@ export default defineSchema({
             packingchecklist: v.boolean(),
             besttimetovisit: v.boolean(),
         }),
-        imageUrl: v.optional(v.string()),  // 封面
     }).index("by_userId", ["userId"]),
 
     users: defineTable({  // 用户表
@@ -83,6 +82,7 @@ export default defineSchema({
         fromDate: v.optional(v.number()),  // 行程开始日期
         toDate: v.optional(v.number()),  // 行程结束日期
         companion: v.optional(v.number()),  // 同行人数
+        imageUrl: v.optional(v.string()),  // 封面
     })
     .searchIndex("by_planTitle", {searchField: 'planTitle'})
     .searchIndex("by_place", {searchField: 'nameoftheplace'}),
