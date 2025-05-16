@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import LeftSidebar from "@/components/LeftSidebar";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function RootLayout({
   children,
@@ -19,7 +20,7 @@ export default function RootLayout({
                 </div> */}
 
                 <div className="flex flex-col md:pb-14 ">
-                  {/* Toaster(notification popups) */}
+                  <Toaster/>
                   {children}
                 </div>
               {/* </div> */}

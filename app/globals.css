@@ -35,11 +35,11 @@ body {
   }
 
   .generate_thumbnail {
-    @apply mt-[30px] flex w-full max-w-[520px] flex-col justify-between gap-2 rounded-lg border border-gray-200 bg-white px-2.5 py-2 md:flex-row md:gap-0;
+    @apply mt-[30px] flex gap-4 w-full flex-col justify-between rounded-lg border border-gray-200 bg-white-1 px-2.5 py-2 md:flex-row;
   }
 
   .image_div {
-    @apply flex-center mt-5 h-[142px] w-full cursor-pointer flex-col gap-3 rounded-xl border-[3.2px] border-dashed border-gray-300 bg-white;
+    @apply flex-center mt-5 h-[142px] w-full cursor-pointer flex-col gap-3 rounded-lg border-[2px] border-dashed border-gray-300 bg-white-1;
   }
 
   .carousel_box {

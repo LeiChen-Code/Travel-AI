@@ -1,7 +1,7 @@
 import { httpAction } from "./_generated/server";
 import { v } from "convex/values";
 
-const generateImage = httpAction(async (ctx, request) => {
+export const generateImage = httpAction(async (ctx, request) => {
     
     const { prompt } = await request.json();
 

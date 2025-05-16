@@ -173,8 +173,10 @@ const CreatePlan = () => {
                             {/* 生成封面 */}
                             <GenerateThumbnail
                                 imgPrompt={imagePrompt}
+                                setImgPrompt={setImagePrompt}
                                 imgURL={imageURL}
-                                setImgStorageId={imageStorageId}
+                                setImage={setImageURL}
+                                setImageStorageId={setImageStorageId}
                             />
                         </div>
 
