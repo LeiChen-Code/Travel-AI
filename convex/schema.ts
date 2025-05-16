@@ -74,16 +74,17 @@ export default defineSchema({
     
     planSettings: defineTable({  // 行程设置的表单
         userId: v.id("users"),  // 关联用户表
-        planId: v.id("planDetails"),  // 关联行程表
+        planId: v.optional(v.id("planDetails")),  // 关联行程表，初始时还没有
         planTitle:v.string(),  // 行程标题
-        nameoftheplace: v.string(),  // 旅游地点
+        travelPlace: v.string(),  // 旅游地点
         budget: v.optional(v.number()),  // 预算
-        style: v.optional(v.array(v.string())),  // 旅行风格选择(紧凑、适中、休闲)
-        fromDate: v.optional(v.number()),  // 行程开始日期
-        toDate: v.optional(v.number()),  // 行程结束日期
-        companion: v.optional(v.number()),  // 同行人数
-        imageUrl: v.optional(v.string()),  // 封面
+        travelType: v.union(v.string(), v.null()),  // 旅行风格选择(紧凑、适中、休闲)
+        fromDate: v.number(),  // 行程开始日期
+        toDate: v.number(),  // 行程结束日期
+        travelPersons: v.optional(v.number()),  // 同行人数
+        imageURL: v.string(),  // 封面，必须有
+        imageStorageId: v.id("_storage"),
     })
     .searchIndex("by_planTitle", {searchField: 'planTitle'})
-    .searchIndex("by_place", {searchField: 'nameoftheplace'}),
+    .searchIndex("by_place", {searchField: 'travelPlace'}),
 })

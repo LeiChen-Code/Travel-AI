@@ -1,9 +1,9 @@
 "use client"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { number, z } from "zod"
  
-import { toast } from "@/hooks/use-toast"
+import { toast, useToast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -29,11 +29,15 @@ import { useState } from "react"
 import GenerateThumbnail from "@/components/GenerateThumbnail"
 import { Loader } from "lucide-react"
 import { Id } from "@/convex/_generated/dataModel"
+import { useMutation } from "convex/react"
+import { api } from "@/convex/_generated/api"
+import { DateRange } from "react-day-picker"
+import { useRouter } from "next/navigation"
 
 const travelStyles = ['悠闲', '适中', '紧凑'];
 
 const FormSchema = z.object({
-  PlanTitle: z.string().min(2),
+  planTitle: z.string().min(2),
   travelPlace: z.string().min(2),
   travelPersons: z.number(),
   budget: z.number(),
@@ -41,8 +45,17 @@ const FormSchema = z.object({
 
 const CreatePlan = () => {
 
-    // 设置表单状态，判断选项是否存在
+    // 定义路由
+    const router = useRouter();
+
+    // 设置旅行模式，判断选项是否存在
     const [travelType, setTravelType] = useState<string | null>(null);
+
+    // 判断日期
+    const [range, setRange] = useState<DateRange | undefined>({
+        from: new Date(),
+        to: new Date(),
+    })
 
     // 行程是否正在生成
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -52,26 +65,78 @@ const CreatePlan = () => {
     const [imageURL, setImageURL] = useState('');
     const [imageStorageId, setImageStorageId] = useState<Id<"_storage"> | null>(null);
 
+    // 创建行程并将信息写入数据库
+    const createPlan = useMutation(api.travelplan.createPlan)
+
+    const { toast } = useToast();
+    
+    // 定义表单
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
-            PlanTitle: "",
+            planTitle: "",
             travelPlace:"",
             travelPersons: 1,
             budget: 0,
         },
     })
     
-    function onSubmit(data: z.infer<typeof FormSchema>) {
-        toast({
-        title: "You submitted the following values:",
-        description: (
-            <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-            <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-            </pre>
-        ),
-        })
+    // 定义 submit handler
+    // 处理表单提交后的流程
+    async function onSubmit(data: z.infer<typeof FormSchema>) {
+        try {
+            setIsSubmitting(true);
+            if(!imageURL || !imageStorageId){
+                toast({
+                    title: '请上传图像作为封面',
+                    variant: 'destructive'
+                })
+                setIsSubmitting(false);
+                throw new Error('请上传图像作为封面');
+            }
+
+            // 日期校验
+            if (!range || !range.from || !range.to) {
+                toast({
+                    title: '请选择完整的日期范围',
+                    variant: 'destructive'
+                })
+                setIsSubmitting(false);
+                throw new Error("请选择完整的日期范围");
+            }
+
+            const plan = await createPlan({
+                planTitle: data.planTitle,  // 行程标题
+                travelPlace: data.travelPlace,  // 行程地点
+                fromDate: range.from.getTime(),  // 转为时间戳
+                toDate: range.to.getTime(),
+                travelPersons: data.travelPersons,  // 同行人数
+                travelType,  // 旅行模式
+                budget: data.budget,  // 预算
+                imageURL,  // 封面 url
+                imageStorageId, // 封面存储 ID
+            })
+
+            toast({
+                title:"行程创建成功！"
+            })
+
+            setIsSubmitting(false);
+
+            // 创建行程后，跳转到生成行程的页面
+            // 先跳转到历史行程页面进行测试
+            router.push('/history')
+
+        } catch (error) {
+            console.log(error);
+            toast({
+                title: '创建行程出错',
+                variant: 'destructive'
+            })
+            setIsSubmitting(false);
+        }
     }
+
     return (
         // 行程标题、行程地点、行程日期、旅行人数、旅行模式、预算、行程封面
         <section className="flex flex-col">
@@ -81,7 +146,7 @@ const CreatePlan = () => {
                     <div className="flex flex-col gap-[30px] border-b border-black-5 pb-10">
                         <FormField
                             control={form.control}
-                            name="PlanTitle"
+                            name="planTitle"
                             render={({ field }) => (
                                 <FormItem className="flex flex-col gap-2.5">
                                 <FormLabel className="text-16 font-medium">1.创建行程标题</FormLabel>
@@ -111,7 +176,8 @@ const CreatePlan = () => {
                             <Label className="text-16 font-medium">
                                 3.选择行程日期
                             </Label>
-                            <DatePickerWithRange/>
+                            
+                            <DatePickerWithRange value={range} onChange={setRange} />
                         </div>
                         
                         <FormField
@@ -121,7 +187,9 @@ const CreatePlan = () => {
                                 <FormItem className="flex flex-col gap-2.5">
                                 <FormLabel className="text-16 font-medium">4.填写同行人数，只能填数字</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="填写旅行人数" {...field} />
+                                    <Input type="number" placeholder="填写旅行人数" {...field} 
+                                        onChange={e => field.onChange(e.target.value === "" ? "" : Number(e.target.value))}
+                                    />
                                 </FormControl>
                                 <FormMessage />
                                 </FormItem>
@@ -159,7 +227,9 @@ const CreatePlan = () => {
                                 <FormItem className="flex flex-col gap-2.5">
                                 <FormLabel className="text-16 font-medium">6.填写预算，单位为元，只能填数字</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="填写预算" {...field} />
+                                    <Input type="number" placeholder="填写预算" {...field} 
+                                        onChange={e => field.onChange(e.target.value === "" ? "" : Number(e.target.value))}
+                                    />
                                 </FormControl>
                                 <FormMessage />
                                 </FormItem>
@@ -187,10 +257,10 @@ const CreatePlan = () => {
                         {/* {isSubmitting ? (
                             <>
                                 <Loader size={20} className="animate-spin ml-2"/>
-                                正在生成...
+                                正在创建行程...
                             </>
                         ):(
-                            '生成成功，点击跳转'
+                            '创建行程成功'
                         )} */}
                     </Button>
                 </form>

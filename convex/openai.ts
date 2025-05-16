@@ -75,6 +75,7 @@ async function pollUntilComplete(taskId: string, apiKey: string, maxAttempts = 1
 }
 
 // 文生图
+// API文档：https://bailian.console.aliyun.com/?tab=api#/api/?type=model&url=https%3A%2F%2Fhelp.aliyun.com%2Fdocument_detail%2F2862677.html
 export const generateImage = action({
   args: { prompt: v.string() },
   handler: async (_, {prompt}) => {

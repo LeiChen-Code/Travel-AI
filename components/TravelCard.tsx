@@ -2,13 +2,18 @@ import Image from 'next/image'
 import React from 'react'
 
 const TravelCard = ({
-    imgURL, title, date, travelId
+    imgURL, title, fromDate, toDate
 }:{
     imgURL: string,
     title: string,
-    date: string,
-    travelId: number,
+    fromDate: number,
+    toDate: number,
+    // todo: travelId
 }) => {
+
+  const from = new Date(fromDate).toLocaleDateString();
+  const to = new Date(toDate).toLocaleDateString();
+
   return (
     <div className='cursor-pointer'>
         <figure className='flex flex-col gap-2'>
@@ -27,7 +32,7 @@ const TravelCard = ({
                     {title}
                 </h1>
                 <h2 className='text-12 truncate font-normal capitalize text-black-1 mt-1'>
-                    {date}
+                    {from}-{to}
                 </h2>
             </div>
         </figure>
