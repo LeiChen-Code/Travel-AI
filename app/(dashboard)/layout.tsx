@@ -13,13 +13,13 @@ export default function RootLayout({
         {/* 页面内容 */}
         <main className="relative flex bg-white-1">
             <LeftSidebar />
-            <section className="border-2 border-red-500 flex w-full px-10 min-h-screen flex-col ">
+            <section className="border-2 border-red-500 flex w-full min-h-screen flex-col ">
               {/* <div className="flex w-full max-w-6xl flex-col max-sm:px-4"> */}
                 {/* <div className="flex h-16 items-center justify-between md:hidden">
                   MoblieNav
                 </div> */}
 
-                <div className="flex flex-col md:pb-14 ">
+                <div className="flex flex-col ">
                   <Toaster/>
                   {children}
                 </div>

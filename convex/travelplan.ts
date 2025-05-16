@@ -1,6 +1,7 @@
 import { ConvexError, v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { DateRange } from "react-day-picker"
+import { string } from "zod";
 
 export const getUrl = mutation({
     args:{
@@ -87,5 +88,26 @@ export const getHistoryPlan = query({
         .collect();
 
         return plans;
+    }
+})
+
+// 根据 planId 获取行程详情
+export const getPlanById = query({
+    args:{
+        planId: v.string(),
+    },
+    handler: async(ctx, {planId}) => {
+
+        // 查询该用户所有历史行程（按出发日期 fromDate 倒序返回）
+        const plan = await ctx.db
+        .query("planDetails")
+        .withIndex("by_planId", (q) => q.eq("planId", planId))
+        .unique();
+
+        if(!plan){
+            throw new Error("未找到该行程计划！")
+        }
+
+        return plan;
     }
 })

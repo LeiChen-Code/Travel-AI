@@ -139,7 +139,7 @@ const CreatePlan = () => {
 
     return (
         // 行程标题、行程地点、行程日期、旅行人数、旅行模式、预算、行程封面
-        <section className="flex flex-col">
+        <section className="flex flex-col px-10 mb-10">
             {/* <h1 className='text-20 font-bold text-black-1'>创建行程</h1> */}
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 flex w-full flex-col">

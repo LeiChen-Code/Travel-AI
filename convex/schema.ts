@@ -3,10 +3,10 @@ import { v } from "convex/values";
 
 export default defineSchema({
     planDetails:defineTable({
+        planId: v.string(),  // planId 用于路由?
         isGeneratedUsingAI: v.boolean(),
-        // ? Id<"_storage"> 是 Convex 中用于引用存储在 Convex 存储系统中的文件的标识符类型
-        storageId: v.union(v.id("_storage"), v.null()),  // ! storage 指什么
-        // nameoftheplace: v.string(),  // 旅游地点
+        // Id<"_storage"> 是 Convex 中用于引用存储在 Convex 存储系统中的文件的标识符类型
+        storageId: v.union(v.id("_storage"), v.null()),  
         userPrompt: v.string(),  // prompt
         abouttheplace: v.string(),  // 旅游地点介绍
         activitiestodo: v.array(v.string()),  // 活动列表
@@ -58,7 +58,9 @@ export default defineSchema({
             packingchecklist: v.boolean(),
             besttimetovisit: v.boolean(),
         }),
-    }).index("by_userId", ["userId"]),
+    })
+    .index("by_userId", ["userId"])
+    .index("by_planId",["planId"]),
 
     users: defineTable({  // 用户表
         userId: v.string(),
