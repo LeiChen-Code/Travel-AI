@@ -9,6 +9,7 @@ import {
 import React from 'react'
 import MapContainer from '@/components/MapContainer';
 import { Chat } from '@/components/chat/chat';
+import GeneratePlan from '@/components/GeneratePlan';
 
 const PlanDetails = ({params} : {params:{planId : string}}) => {
 
@@ -36,7 +37,7 @@ const PlanDetails = ({params} : {params:{planId : string}}) => {
         {/* 左边 */}
         <ResizablePanel defaultSize={50} minSize={20} className='h-screen border'>
           <div className="h-full overflow-auto flex items-center justify-center">
-            <span className="font-semibold">One</span>
+            <GeneratePlan/>
           </div>
         </ResizablePanel>
 
@@ -57,6 +58,7 @@ const PlanDetails = ({params} : {params:{planId : string}}) => {
             {/* 右下：聊天框 */}
             <ResizablePanel defaultSize={50} minSize={30} className='border'>
               <div className="flex h-full items-center justify-center">
+                {/* 聊天组件 */}
                 <Chat />
               </div>
             </ResizablePanel>

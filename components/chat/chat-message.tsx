@@ -4,6 +4,7 @@ import { Message } from "ai";
 import ReactMarkdown from "react-markdown";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import remarkGfm from 'remark-gfm'
 
 // 定义单条聊天消息组件
 
@@ -56,11 +57,11 @@ export function ChatMessage({
 
           {parentMessage && isExpanded && (
             <div className="mb-2 p-2 bg-gray-50 text-sm text-gray-600">
-              <div className="prose max-w-none break-words prose-sm">
-                <ReactMarkdown>
-                  {parentMessage.content}
-                </ReactMarkdown>
-              </div>
+              
+              <ReactMarkdown remarkPlugins={[remarkGfm]} className="prose max-w-none break-words prose-sm">
+                {parentMessage.content}
+              </ReactMarkdown>
+              
             </div>
           )}
 
@@ -69,11 +70,14 @@ export function ChatMessage({
               "inline-block rounded-chat",
               message.role === "user" ? "bg-[#F6F7F9] px-4 py-2" : ""
             )}>
-            <div className="prosemal max-w-none break-words prose-p:leading-relaxed prose-pre:p-0 prose-headings:font-normal prose-strong:font-nor">
-              <ReactMarkdown>
-                {message.content}
-              </ReactMarkdown>
-            </div>
+           
+            <ReactMarkdown 
+              remarkPlugins={[remarkGfm]}
+              className="prosemal max-w-none break-words prose-p:leading-relaxed prose-pre:p-0 
+              prose-headings:font-normal prose-strong:font-nor">
+              {message.content}
+            </ReactMarkdown>
+            
           </div>
 
           {replies.length > 0 && (
