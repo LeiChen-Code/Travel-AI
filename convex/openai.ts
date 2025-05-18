@@ -10,34 +10,47 @@ const openai = new OpenAI(
 );
 
 export const generateText = action({
-    args: {input: v.string()},
-    handler: async (_, {input}) => {
-        // 使用参数
+    args: {
+      messages: v.array(
+        v.object({
+          content: v.string(),
+          role: v.union(v.literal("system"), v.literal("user"), v.literal("assistant")),
+        })
+      ),
+    },
+    handler: async (ctx, args) => {
+        
+      try {
         const completion = await openai.chat.completions.create({
-        model: "qwen-plus",  //可按需更换模型名称。
-            messages: [
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": input}
-            ],
-            stream: true,
+            model: "qwen-plus",  //可按需更换模型名称。
+            messages: args.messages,
+            stream: true,  // 流式输出
         });
 
+        return completion;
+
         // 流式输出
-        const chunks: Uint8Array[] = [];
+        // const chunks: Uint8Array[] = [];
         
-        for await (const chunk of completion) {
-            // console.log(JSON.stringify(chunk));
-            chunks.push(new TextEncoder().encode(JSON.stringify(chunk)));
-        }
+        // for await (const chunk of completion) {
+        //     // console.log(JSON.stringify(chunk));
+        //     chunks.push(new TextEncoder().encode(JSON.stringify(chunk)));
+        // }
         
-        const buffer = new Uint8Array(chunks.reduce((acc, chunk) => acc + chunk.length, 0));
-        let offset = 0;
-        for (const chunk of chunks) {
-            buffer.set(chunk, offset);
-            offset += chunk.length;
-        }
+        // const buffer = new Uint8Array(chunks.reduce((acc, chunk) => acc + chunk.length, 0));
+        // let offset = 0;
+        // for (const chunk of chunks) {
+        //     buffer.set(chunk, offset);
+        //     offset += chunk.length;
+        // }
         
-        return buffer;
+        // return buffer;
+      } catch (error) {
+        // 打印错误日记
+        console.error("OpenAI API error:", error);
+        throw new Error(`Failed to get a response from OpenAI: ${error}`);
+      }
+
     },
 })
 

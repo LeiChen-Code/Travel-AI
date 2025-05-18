@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/resizable"
 import React from 'react'
 import MapContainer from '@/components/MapContainer';
+import { Chat } from '@/components/chat/chat';
 
 const PlanDetails = ({params} : {params:{planId : string}}) => {
 
@@ -56,7 +57,7 @@ const PlanDetails = ({params} : {params:{planId : string}}) => {
             {/* 右下：聊天框 */}
             <ResizablePanel defaultSize={50} minSize={30} className='border'>
               <div className="flex h-full items-center justify-center">
-                <span className="font-semibold">Three</span>
+                <Chat />
               </div>
             </ResizablePanel>
 
