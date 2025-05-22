@@ -23,8 +23,10 @@ import type * as messages from "../messages.js";
 import type * as modelPreferences from "../modelPreferences.js";
 import type * as multiModelAI from "../multiModelAI.js";
 import type * as openai from "../openai.js";
+import type * as plan from "../plan.js";
 import type * as travelplan from "../travelplan.js";
 import type * as users from "../users.js";
+import type * as utils from "../utils.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -45,8 +47,10 @@ declare const fullApi: ApiFromModules<{
   modelPreferences: typeof modelPreferences;
   multiModelAI: typeof multiModelAI;
   openai: typeof openai;
+  plan: typeof plan;
   travelplan: typeof travelplan;
   users: typeof users;
+  utils: typeof utils;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

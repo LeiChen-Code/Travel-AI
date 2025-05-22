@@ -9,7 +9,7 @@ import {
 import React from 'react'
 import MapContainer from '@/components/MapContainer';
 import { Chat } from '@/components/chat/chat';
-import GeneratePlan from '@/components/GeneratePlan';
+import GeneratePlan from '@/components/travelplan/GeneratePlan';
 
 const PlanDetails = ({params} : {params:{planId : string}}) => {
 

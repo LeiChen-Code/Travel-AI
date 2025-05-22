@@ -1,7 +1,15 @@
 import { ConvexError, v } from "convex/values";
-import { mutation, query } from "./_generated/server";
-import { DateRange } from "react-day-picker"
-import { string } from "zod";
+import {
+  ActionCtx,
+  MutationCtx,
+  QueryCtx,
+  action,
+  internalMutation,
+  internalQuery,
+  mutation,
+  query,
+} from "./_generated/server";
+
 
 export const getUrl = mutation({
     args:{
@@ -87,27 +95,12 @@ export const getHistoryPlan = query({
         .order("desc") // 默认根据 _creationTime 排序（或你也可以 .order("desc", "fromDate")）
         .collect();
 
+        // 打印日志
+        console.log(`Get History Plans by ${userId}`)
+
         return plans;
     }
 })
 
-// 根据 planId 获取行程详情
-export const getPlanById = query({
-    args:{
-        planId: v.string(),
-    },
-    handler: async(ctx, {planId}) => {
 
-        // 查询该用户所有历史行程（按出发日期 fromDate 倒序返回）
-        const plan = await ctx.db
-        .query("planDetails")
-        .withIndex("by_planId", (q) => q.eq("planId", planId))
-        .unique();
 
-        if(!plan){
-            throw new Error("未找到该行程计划！")
-        }
-
-        return plan;
-    }
-})

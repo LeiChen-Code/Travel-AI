@@ -3,7 +3,7 @@ import { v } from "convex/values";
 
 export default defineSchema({
     planDetails:defineTable({
-        planId: v.string(),  // planId 用于路由?
+        // planId: v.string(),  // planId 用于路由?
         isGeneratedUsingAI: v.boolean(),
         // Id<"_storage"> 是 Convex 中用于引用存储在 Convex 存储系统中的文件的标识符类型
         storageId: v.union(v.id("_storage"), v.null()),  
@@ -59,17 +59,16 @@ export default defineSchema({
             besttimetovisit: v.boolean(),
         }),
     })
-    .index("by_userId", ["userId"])
-    .index("by_planId",["planId"]),
+    .index("by_userId", ["userId"]),
 
     users: defineTable({  // 用户表
-        userId: v.string(),
+        clerkId: v.string(),
         email: v.string(),
         firstName: v.optional(v.string()),
         lastName: v.optional(v.string()),
         imageUrl:v.string(),  // 用户头像
     })
-    .index("by_user_id", ["userId"])
+    .index("by_user_id", ["clerkId"])
     .index("by_email", ["email"]),
     
     planSettings: defineTable({  // 行程设置的表单
@@ -86,8 +85,9 @@ export default defineSchema({
         imageStorageId: v.id("_storage"),
     })
     .searchIndex("by_planTitle", {searchField: 'planTitle'})
-    .searchIndex("by_place", {searchField: 'travelPlace'}),
-    
+    .searchIndex("by_place", {searchField: 'travelPlace'})
+    .searchIndex("by_planId", {searchField: 'planId'}),
+
     // messages 聊天消息表，存储实时聊天消息，处理高频实时操作
     messages: defineTable({
         content: v.optional(v.string()),  // 消息内容
