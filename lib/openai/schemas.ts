@@ -1,3 +1,5 @@
+// 此文件定义三个 JSON 模式，分别对应不同批次的 AI 生成需求
+
 export const batch1Schema = {
     type: "object",
     properties: {
@@ -20,12 +22,7 @@ export const batch1Schema = {
 export const batch2Schema = {
     type: "object",
     properties: {
-        adventuresactivitiestodo: {
-            type: "array",
-            description: "Top adventures activities, atleast 5, like trekking, water sports, specify the place also",
-            items: { type: "string" },
-        },
-        localcuisinerecommendations: {
+        localfood: {
             type: "array",
             description: "Local Cuisine Recommendations",
             items: { type: "string" },
@@ -37,8 +34,7 @@ export const batch2Schema = {
         },
     },
     "required": [
-        "adventuresactivitiestodo",
-        "localcuisinerecommendations",
+        "localfood",
         "packingchecklist"
     ],
 };
@@ -96,28 +92,8 @@ export const batch3Schema = {
                 required: ["title", "activities"],
             },
         },
-        topplacestovisit: {
-            type: "array",
-            description: "Top places to visit along with their coordinates, atelast top 5, can be more",
-            items: {
-                type: "object",
-                properties: {
-                    name: { type: "string", description: "Name of the place" },
-                    coordinates: {
-                        type: "object",
-                        properties: {
-                            lat: { type: "number", description: "Latitude" },
-                            lng: { type: "number", description: "Longitude" },
-                        },
-                        required: ["lat", "lng"],
-                    },
-                },
-                required: ["name", "coordinates"],
-            },
-        },
     },
     "required": [
         "itinerary",
-        "topplacestovisit"
     ],
 };

@@ -23,7 +23,7 @@ const TravelCard = ({
 
 
     return (
-        // onClick 表示点击事件，点击出发 handleCard
+        // onClick 表示点击事件，点击触发 handleCard
         <div className='cursor-pointer' onClick={handleCard}>
             <figure className='flex flex-col gap-2'>
                 <div className='relative overflow-hidden rounded-md aspect-square w-56 bg-gray-100'>

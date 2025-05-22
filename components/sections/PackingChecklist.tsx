@@ -5,17 +5,11 @@ import HeaderWithEditIcon from "@/components/shared/HeaderWithEditIcon";
 import List from "@/components/shared/List";
 import {Skeleton} from "@/components/ui/skeleton";
 import {api} from "@/convex/_generated/api";
-import {Doc} from "@/convex/_generated/dataModel";
+import {Doc, Id} from "@/convex/_generated/dataModel";
+import { PackingChecklistProps } from "@/types";
 import {useMutation} from "convex/react";
 import {Backpack} from "lucide-react";
 import {useState} from "react";
-
-type PackingChecklistProps = {
-  checklist: string[] | undefined;
-  planId: string;
-  isLoading: boolean;
-  allowEdit: boolean;
-};
 
 export default function PackingChecklist({
   checklist,
@@ -24,7 +18,7 @@ export default function PackingChecklist({
   allowEdit,
 }: PackingChecklistProps) {
   const [editMode, setEditMode] = useState(false);
-  const updatePackingChecklist = useMutation(api.plan.updatePartOfPlan);
+  const updatePackingChecklist = useMutation(api.travelplan.updatePartOfPlan);
 
   const handleToggleEditMode = () => {
     setEditMode(!editMode);
@@ -32,7 +26,7 @@ export default function PackingChecklist({
 
   const updateChecklist = (updatedArray: string[]) => {
     updatePackingChecklist({
-      planId: planId as Doc<"plan">["_id"],
+      planId: planId as Id<"planDetails">,
       data: updatedArray,
       key: "packingchecklist",
     }).then(() => {

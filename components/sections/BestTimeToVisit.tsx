@@ -4,17 +4,11 @@ import EditText from "@/components/shared/EditText";
 import HeaderWithEditIcon from "@/components/shared/HeaderWithEditIcon";
 import {Skeleton} from "@/components/ui/skeleton";
 import {api} from "@/convex/_generated/api";
-import {Doc} from "@/convex/_generated/dataModel";
+import { Id } from "@/convex/_generated/dataModel";
+import { BestTimeToVisitProps } from "@/types";
 import {useMutation} from "convex/react";
 import {Clock3} from "lucide-react";
 import {useState} from "react";
-
-type BestTimeToVisitProps = {
-  content: string | undefined;
-  isLoading: boolean;
-  planId: string;
-  allowEdit: boolean;
-};
 
 export default function BestTimeToVisit({
   content,
@@ -22,8 +16,9 @@ export default function BestTimeToVisit({
   planId,
   allowEdit,
 }: BestTimeToVisitProps) {
-  const [editMode, setEditMode] = useState(false);
-  const updateBestTimeToVisit = useMutation(api.plan.updatePartOfPlan);
+
+  const [editMode, setEditMode] = useState(false);  // 是否允许编辑
+  const updateBestTimeToVisit = useMutation(api.travelplan.updatePartOfPlan);  // 更新数据库信息
 
   const handleToggleEditMode = () => {
     setEditMode(!editMode);
@@ -31,7 +26,7 @@ export default function BestTimeToVisit({
 
   const updateBestTimeToVisitContent = (updatedContent: string) => {
     updateBestTimeToVisit({
-      planId: planId as Doc<"plan">["_id"],
+      planId: planId as Id<"planDetails">,
       data: updatedContent.trim(),
       key: "besttimetovisit",
     }).then(() => {
@@ -46,7 +41,7 @@ export default function BestTimeToVisit({
         handleToggleEditMode={handleToggleEditMode}
         hasData={typeof content === "string" && content.length > 0}
         icon={<Clock3 className="mr-2" />}
-        title="Best Time To Visit"
+        title="最佳旅行时间"
         isLoading={isLoading}
       />
       <div className="ml-8">
@@ -60,7 +55,7 @@ export default function BestTimeToVisit({
           ) : (
             content || (
               <div className=" flex justify-center items-center">
-                Click + to add best time to visit
+                点击 + 添加最佳旅行时间
               </div>
             )
           )

@@ -1,9 +1,30 @@
+"use client"
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React from 'react'
 
 const Home = () => {
+
+  const router = useRouter();
+
+  // 点击登录按钮，应该导航到 登录页
+  const SignIn = () => {
+      // 使用路由
+      router.push(`/sign-in`, {
+          scroll: true
+      })
+  }
+
+  // 点击注册按钮，应该导航到 注册页
+  const SignUp = () => {
+      // 使用路由
+      router.push(`/sign-up`, {
+          scroll: true
+      })
+  }
+
   return (
     <main className="flex flex-col items-center justify-center min-h-screen p-4">
       {/* 主容器 */}
@@ -33,11 +54,11 @@ const Home = () => {
             智行派是一款专注于旅游领域的 AI 助手，为用户提供一站式旅行解决方案。基于专业大模型技术，我们为您生成个性化行程，支持实时调整与智能优化，让旅行规划更轻松、更精准。
           </p>
           <div className="flex justify-center md:justify-start space-x-4">
-            <Button className="bg-blue-500 hover:bg-blue-700 text-white-1 font-medium py-2 px-16 rounded">
-              <Link href="/sign-up">注册</Link>
+            <Button onClick={SignUp} className="bg-blue-500 hover:bg-blue-700 text-white-1 font-medium py-2 px-16 rounded">
+              注册
             </Button>
-            <Button className="bg-blue-500 hover:bg-blue-700 text-white-1 font-medium py-2 px-16 rounded">
-              <Link href="/sign-in">登录</Link>
+            <Button onClick={SignIn} className="bg-blue-500 hover:bg-blue-700 text-white-1 font-medium py-2 px-16 rounded">
+              登录
             </Button>
           </div>
         </div>

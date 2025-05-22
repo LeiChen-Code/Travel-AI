@@ -13,22 +13,26 @@ const openai = new OpenAI(
     }
 );
 
-const promptSuffix = `generate travel data according to the schema and in json format,
-                     do not return anything in your response outside of curly braces, 
-                     generate response as per the functin schema provided. Dates given,
-                     activity preference and travelling with may influence likw 50% while generating plan.`;
+const promptSuffix = `根据提供的模式(schema)以 JSON 格式生成旅行数据，
+                     响应内容中除了大括号内的内容外，不要返回任何其他内容。
+                     生成旅行计划时，给定的日期、旅行模式(travelType)和同行人数(travelPersons)可能会产生约 50% 的影响。`;
 
-// 调用大模型接口
+// 大模型接口
 const callOpenAIApi = (prompt: string, schema: any, description: string) => {
-  console.log({ prompt, schema });
+  
+  // 将 schema 整合到 prompt 中
+  const fullPrompt = `Schema: ${JSON.stringify(schema)}\nDescription: ${description}\n${prompt}`;
+  // 打印日志
+  console.log({ fullPrompt, schema });
+
   const completion = openai.chat.completions.create({
-    model: "qwen-plus",
+    model: "qwen-plus",  // 调用通义千问
     messages: [
       { role: "system", content: "You are a helpful travel assistant." },
-      { role: "user", content: prompt },
+      { role: "user", content: fullPrompt },
     ],
-    functions: [{ name: "set_travel_details", parameters: schema, description }],
-    function_call: { name: "set_travel_details" },
+    tools: [{  type: "function", function: { name: "set_travel_details", parameters: schema, description:description } }],
+    tool_choice: { type: "function", function: { name: "set_travel_details" } },
   });
   return completion;
 }
@@ -36,69 +40,66 @@ const callOpenAIApi = (prompt: string, schema: any, description: string) => {
 // 生成目的地介绍和最佳旅行时间
 export const generatebatch1 = (promptText: string) => {
   const prompt = `${promptText}, ${promptSuffix}`;
-  const description = `Generate a description of information about a place or location according to the following schema:
+  const description = `根据以下模式生成关于一个地方或地点的信息描述：
 
-  - About the Place:
-    - A string containing information about the place, comprising at least 50 words.
+  - 旅行目的地介绍：
+    - 包含一个描述该旅行地点的字符串，至少 50 个词。
   
-  - Best Time to Visit:
-    - A string specifying the best time to visit the place.
+  - 最佳游览时间：
+    - 一个指定游览该地方最佳时间的字符串。
   
-  Ensure that the function response adheres to the schema provided and is in JSON format. The response should not contain anything outside of the defined schema.
+  确保函数响应符合提供的模式，并采用 JSON 格式。响应内容不应包含模式定义之外的任何内容。
   `;
   return callOpenAIApi(prompt, batch1Schema, description);
 }
 
 type OpenAIInputType = {
   userPrompt: string;
-  activityPreferences?: string | undefined;
+  travelType?: string | undefined;
+  travelPersons?: number | undefined;
   fromDate?: number | undefined;
   toDate?: number | undefined;
-  companion?: string | undefined;
 };
 
-// 生成活动、食物推荐、行李清单
+// 生成食物推荐、行李清单
 export const generatebatch2 = (inputParams: OpenAIInputType) => {
-  const description = `Generate a description of recommendations for a trip according to the following schema:
-  - Top Activities to do:
-    - An array listing top activities to do, including at least 5 activities.
-    - Each activity should be specified along with its location.
+  const description = `根据以下模式生成一次旅行的推荐描述：
   
-  - Local Food Recommendations:
-    - An array providing recommendations for local cuisine to try during the trip.
+  - 当地美食推荐：
+    - 一个提供旅行期间尝试当地美食建议的数组。
   
-  - Packing Checklist:
-    - An array containing items that should be included in the packing checklist for the trip.
+  - 旅行打包清单：
+    - 一个旅行打包清单中应包含物品的数组。
   
-  Ensure that the function response adheres to the schema provided and is in JSON format. The response should not contain anything outside of the defined schema.`;
+  确保函数响应符合提供的模式，并采用 JSON 格式。响应内容不应包含模式定义之外的任何内容。`;
   return callOpenAIApi(getPropmpt(inputParams), batch2Schema, description);
 }
 
-// 生成行程规划、景点推荐
+// 生成行程规划
 export const generatebatch3 = (inputParams: OpenAIInputType) => {
-  const description = `Generate a description of a travel itinerary and top places to visit according to the following schema:
-  - Itinerary:
-    - An array containing details of the itinerary for the specified number of days.
-    - Each day's itinerary includes a title and activities for morning, afternoon, and evening.
-    - Activities are described as follows:
-      - Morning, Afternoon, Evening:
-        - Each includes an array of itinerary items, where each item has a description and a brief description.
+  // 补充地点
+  const description = `根据以下模式生成旅行行程：
+
+  - 行程安排：
+    - 一个包含指定天数行程详情的数组。
+    - 每天的行程包括一个标题以及上午、下午和晚上的活动。
+    - 活动描述如下：
+      - 上午、下午、晚上：
+        - 每个时段都包含一个行程项目数组，每个项目都有一个描述和简要说明。
   
-  - Top Places to Visit:
-    - An array listing the top places to visit along with their coordinates.
-    - Each place includes a name and coordinates (latitude and longitude).
-  
-  Ensure that the function response adheres to the schema provided and is in JSON format. The response should not contain anything outside of the defined schema.`;
+  确保函数响应符合提供的模式，并采用 JSON 格式。响应内容不应包含模式定义之外的任何内容。`;
   return callOpenAIApi(getPropmpt(inputParams), batch3Schema, description);
 }
 
 // 根据用户输入的表单行程提示词 prompt
-const getPropmpt = ({ userPrompt, activityPreferences, companion, fromDate, toDate }: OpenAIInputType) => {
-  let prompt = `${userPrompt}, from date-${fromDate} to date-${toDate}`;
+const getPropmpt = ({ userPrompt, travelType, travelPersons, fromDate, toDate }: OpenAIInputType) => {
+  let prompt = `${userPrompt}, 从-${fromDate} 到-${toDate}`;
 
-  if (companion && companion.length > 0) prompt += `${prompt}, travelling with-${companion}`;
+  if (travelPersons !== undefined) prompt += `${prompt}, 同行人数为-${travelPersons}`;
 
-  if (activityPreferences && activityPreferences.length > 0) prompt += `${prompt}, activity preferences-${activityPreferences}`;
+  if (travelType && travelType.length > 0) prompt += `${prompt}, 偏好的旅行模式为-${travelType}`;
+
+  // 添加预算
 
   prompt = `${prompt}, ${promptSuffix}`;
   return prompt;

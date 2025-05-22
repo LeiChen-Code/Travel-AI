@@ -21,7 +21,7 @@ const handleClerkWebhook = httpAction(async (ctx, request) => {
     switch (event.type) {
         case "user.created":  // 完成验证后将调用 createUser 函数
             await ctx.runMutation(internal.users.createUser, {
-                userId: event.data.id,
+                clerkId: event.data.id,
                 email: event.data.email_addresses[0].email_address,
                 imageUrl: event.data.image_url,
                 firstName: event.data?.first_name ?? "",  // event.data.first_name 可能为空，因为要设置一个默认值""
@@ -30,7 +30,7 @@ const handleClerkWebhook = httpAction(async (ctx, request) => {
             break;
         case "user.updated":
             await ctx.runMutation(internal.users.updateUser, {
-                userId: event.data.id,
+                clerkId: event.data.id,
                 imageUrl: event.data.image_url,
                 email: event.data.email_addresses[0].email_address,
                 firstName: event.data?.first_name ?? "", 
@@ -39,7 +39,7 @@ const handleClerkWebhook = httpAction(async (ctx, request) => {
             break;
         case "user.deleted":
             await ctx.runMutation(internal.users.deleteUser, {
-                userId: event.data.id as string,
+                clerkId: event.data.id as string,
             });
             break;
     }

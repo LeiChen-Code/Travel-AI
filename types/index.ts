@@ -1,4 +1,4 @@
-import { Id } from "@/convex/_generated/dataModel";
+import { Doc, Id } from "@/convex/_generated/dataModel";
 import { Dispatch, SetStateAction } from "react";
 
 // 定义图像生成的属性
@@ -18,4 +18,44 @@ export interface TravelCardProps{
     toDate: number,
     planId: Id<"planDetails"> | undefined,
 }
+
+// 描述旅行目的地组件的属性
+export interface AboutThePlaceProps {
+  content: string | undefined;  // 关于旅行地点的描述内容
+  isLoading: boolean;  // 是否正在加载
+  planId: string;  // 行程 Id
+  allowEdit: boolean; // 是否允许编辑
+};
+
+// 描述最佳旅行时间组件的属性
+export interface BestTimeToVisitProps {
+  content: string | undefined;
+  isLoading: boolean;
+  planId: string;
+  allowEdit: boolean;
+};
+
+// 行程表组件的属性
+export interface ItineraryProps {
+  itinerary: Doc<"planDetails">["itinerary"] | undefined;
+  planId: string;
+  isLoading: boolean;
+  allowEdit: boolean;
+};
+
+// 描述当地美食组件的属性
+export interface LocalFoodProps {
+  recommendations: string[] | undefined;
+  planId: string;
+  isLoading: boolean;
+  allowEdit: boolean;
+};
+
+// 描述行李清单组件的属性
+export interface PackingChecklistProps {
+  checklist: string[] | undefined;
+  planId: string;
+  isLoading: boolean;
+  allowEdit: boolean;
+};
 

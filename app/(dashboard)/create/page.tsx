@@ -33,6 +33,7 @@ import { useMutation } from "convex/react"
 import { api } from "@/convex/_generated/api"
 import { DateRange } from "react-day-picker"
 import { useRouter } from "next/navigation"
+import { differenceInDays } from "date-fns"
 
 const travelStyles = ['悠闲', '适中', '紧凑'];
 
@@ -49,7 +50,7 @@ const CreatePlan = () => {
     const router = useRouter();
 
     // 设置旅行模式，判断选项是否存在
-    const [travelType, setTravelType] = useState<string | null>(null);
+    const [travelType, setTravelType] = useState<string | undefined>(undefined);
 
     // 判断日期
     const [range, setRange] = useState<DateRange | undefined>({
@@ -104,17 +105,20 @@ const CreatePlan = () => {
                 setIsSubmitting(false);
                 throw new Error("请选择完整的日期范围");
             }
-
+            
+            // 调用创建行程 createPlan 接口
             const plan = await createPlan({
                 planTitle: data.planTitle,  // 行程标题
                 travelPlace: data.travelPlace,  // 行程地点
                 fromDate: range.from.getTime(),  // 转为时间戳
                 toDate: range.to.getTime(),
+                noOfDays: differenceInDays(range.from, range.to).toString(),
                 travelPersons: data.travelPersons,  // 同行人数
                 travelType,  // 旅行模式
                 budget: data.budget,  // 预算
                 imageURL,  // 封面 url
                 imageStorageId, // 封面存储 ID
+                isGeneratedUsingAI: false, // 是否已 AI 生成
             })
 
             toast({

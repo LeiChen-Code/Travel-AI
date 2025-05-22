@@ -7,30 +7,28 @@ import EditText from "@/components/shared/EditText";
 import HeaderWithEditIcon from "@/components/shared/HeaderWithEditIcon";
 import {api} from "@/convex/_generated/api";
 import {useMutation} from "convex/react";
-import {Doc} from "@/convex/_generated/dataModel";
+import { Id } from "@/convex/_generated/dataModel";
+import { AboutThePlaceProps } from "@/types";
 
-type AboutThePlaceProps = {
-  content: string | undefined;
-  isLoading: boolean;
-  planId: string;
-  allowEdit: boolean;
-};
 
 export default function AboutThePlace({content, isLoading, planId, allowEdit}: AboutThePlaceProps) {
-  const [editMode, setEditMode] = useState(false);
-  const updateAboutThePlace = useMutation(api.plan.updatePartOfPlan);
+  
+  const [editMode, setEditMode] = useState(false);  // editMode 表示是否允许编辑
+  const updateAboutThePlace = useMutation(api.travelplan.updatePartOfPlan);
 
+  // 切换编辑模式状态
   const handleToggleEditMode = () => {
     setEditMode(!editMode);
   };
 
+  // 用户编辑内容并提交
   const updateAboutThePlaceContent = (updatedContent: string) => {
     updateAboutThePlace({
-      planId: planId as Doc<"plan">["_id"],
+      planId: planId as Id<"planDetails">,
       data: updatedContent.trim(),
       key: "abouttheplace",
     }).then(() => {
-      handleToggleEditMode();
+      handleToggleEditMode();  // 当内容生成后，切换编辑模式
     });
   };
 
@@ -41,7 +39,7 @@ export default function AboutThePlace({content, isLoading, planId, allowEdit}: A
         handleToggleEditMode={handleToggleEditMode}
         hasData={typeof content === "string" && content.length > 0}
         icon={<Info className="mr-2" />}
-        title="About the Place"
+        title="目的地介绍"
         isLoading={isLoading}
       />
       <div className="ml-8">
@@ -55,7 +53,7 @@ export default function AboutThePlace({content, isLoading, planId, allowEdit}: A
           ) : (
             content || (
               <div className=" flex justify-center items-center">
-                Click + to add about the place
+                点击 + 添加地点
               </div>
             )
           )

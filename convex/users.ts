@@ -4,7 +4,7 @@ import { internalMutation } from "./_generated/server";
 // 创建用户
 export const createUser = internalMutation({
     args:{
-        userId: v.string(),
+        clerkId: v.string(),
         email: v.string(),
         imageUrl: v.string(),
         firstName: v.optional(v.string()),
@@ -12,7 +12,7 @@ export const createUser = internalMutation({
     }, handler: async(ctx, args) => {
         // 第一个参数是表格，第二个参数传入内容
         await ctx.db.insert("users", {
-            userId: args.userId,
+            clerkId: args.clerkId,
             email: args.email,
             imageUrl: args.imageUrl,
             firstName: args.firstName,
@@ -24,7 +24,7 @@ export const createUser = internalMutation({
 // 更新用户信息
 export const updateUser = internalMutation({
     args: {
-        userId: v.string(),
+        clerkId: v.string(),
         imageUrl: v.string(),
         email: v.string(),
         firstName: v.optional(v.string()),
@@ -33,7 +33,7 @@ export const updateUser = internalMutation({
     async handler(ctx, args) {
       const user = await ctx.db
         .query("users")
-        .filter((q) => q.eq(q.field("userId"), args.userId))
+        .filter((q) => q.eq(q.field("clerkId"), args.clerkId))
         .unique();
   
       if (!user) {
@@ -51,11 +51,11 @@ export const updateUser = internalMutation({
 
 // 删除用户
 export const deleteUser = internalMutation({
-    args: { userId: v.string() },
+    args: { clerkId: v.string() },
     async handler(ctx, args) {
       const user = await ctx.db
         .query("users")
-        .filter((q) => q.eq(q.field("userId"), args.userId))
+        .filter((q) => q.eq(q.field("clerkId"), args.clerkId))
         .unique();
   
       if (!user) {

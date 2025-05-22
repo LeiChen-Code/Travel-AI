@@ -9,16 +9,16 @@ export default defineSchema({
         storageId: v.union(v.id("_storage"), v.null()),  
         userPrompt: v.string(),  // prompt
         abouttheplace: v.string(),  // 旅游地点介绍
-        activitiestodo: v.array(v.string()),  // 活动列表
-        topplacestovisit: v.array(
-            v.object({
-                name: v.string(),  // 名称
-                coordinates: v.object({  // 经纬度坐标
-                    lat: v.float64(),
-                    lng: v.float64(),
-                }),
-            })
-        ),  // 热门景点推荐
+        // activitiestodo: v.array(v.string()),  // 活动列表
+        // topplacestovisit: v.array(
+        //     v.object({
+        //         name: v.string(),  // 名称
+        //         coordinates: v.object({  // 经纬度坐标
+        //             lat: v.float64(),
+        //             lng: v.float64(),
+        //         }),
+        //     })
+        // ),  // 热门景点推荐
         packingchecklist: v.array(v.string()),  // 旅行物品清单
         localfood: v.array(v.string()),  // 美食推荐
         userId: v.id("users"),  // 用户ID，连接用户表
@@ -51,8 +51,8 @@ export default defineSchema({
         contentGenerationState: v.object({
             imagination: v.boolean(),
             abouttheplace: v.boolean(),
-            activitiestodo: v.boolean(),
-            topplacestovisit: v.boolean(),
+            // activitiestodo: v.boolean(),
+            // topplacestovisit: v.boolean(),
             itinerary: v.boolean(),
             localfood: v.boolean(),
             packingchecklist: v.boolean(),
@@ -77,7 +77,7 @@ export default defineSchema({
         planTitle:v.string(),  // 行程标题
         travelPlace: v.string(),  // 旅游地点
         budget: v.optional(v.number()),  // 预算
-        travelType: v.union(v.string(), v.null()),  // 旅行风格选择(紧凑、适中、休闲)
+        travelType: v.optional(v.string()),  // 旅行风格选择(紧凑、适中、休闲)
         fromDate: v.number(),  // 行程开始日期
         toDate: v.number(),  // 行程结束日期
         travelPersons: v.optional(v.number()),  // 同行人数
