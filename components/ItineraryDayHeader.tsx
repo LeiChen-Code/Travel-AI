@@ -15,25 +15,27 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+} from "@/components/ui/alert-dialog";  // 弹出对话框且需要用户响应
 import {useState} from "react";
+import { ItineraryDayHeaderProps } from "@/types";
 
-type ItineraryDayHeaderProps = {
-  title: string;
-  planId: string;
-  allowEdit: boolean;
-};
+// 此组件定义行程表中的一天的 header
 
 export default function ItineraryDayHeader({title, planId, allowEdit}: ItineraryDayHeaderProps) {
-  const deleteDayInItinerary = useMutation(api.plan.deleteDayInItinerary);
+  // 从接口定义删除行程表某一天的函数
+  const deleteDayInItinerary = useMutation(api.travelplan.deleteDayInItinerary);
+  // 定义是否弹出对话窗口
   const [open, setOpen] = useState(false);
 
   return (
     <div className="flex justify-between mb-2 text-lg font-bold leading-2 text-foreground ">
+      {/* 标题 */}
       <span>{title}</span>
+
       {allowEdit && (
         <AlertDialog open={open} onOpenChange={setOpen}>
           <AlertDialogTrigger>
+            {/* 删除按钮 */}
             <Button
               asChild
               size="icon"
@@ -44,22 +46,25 @@ export default function ItineraryDayHeader({title, planId, allowEdit}: Itinerary
               <TrashIcon className="h-6 w-6 text-red-500 dark:text-foreground dark:hover:text-red-500 hover:scale-105 transition-all duration-300" />
             </Button>
           </AlertDialogTrigger>
+
           <AlertDialogContent>
+
             <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogTitle>请确认你的操作</AlertDialogTitle>
               <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete the day from your
-                Itinerary.
+                此操作无法撤销。这将从您的行程中永久删除这一天。
               </AlertDialogDescription>
             </AlertDialogHeader>
+
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogCancel>取消</AlertDialogCancel>
               <AlertDialogAction
-                onClick={() => deleteDayInItinerary({planId: planId as Id<"plan">, dayName: title})}
+                onClick={() => deleteDayInItinerary({planId: planId as Id<"planDetails">, dayName: title})}
               >
-                Delete
+                删除
               </AlertDialogAction>
             </AlertDialogFooter>
+
           </AlertDialogContent>
         </AlertDialog>
       )}

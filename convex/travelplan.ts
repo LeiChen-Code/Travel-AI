@@ -16,6 +16,35 @@ import { internal } from "./_generated/api";
 import { generatebatch1, generatebatch2, generatebatch3 } from "@/lib/openai";
 
 
+// 判断用户是否是该行程的管理者
+export const PlanAdmin = query({
+  args: { planId: v.string() },
+  handler: async (ctx, args) => {
+    return getPlanAdmin(ctx, args.planId);
+  },
+});
+// 校验行程和用户
+export const getPlanAdmin = async (ctx: QueryCtx, planId: string) => {
+    // 用户身份验证
+    const identity = await getIdentityOrThrow(ctx);
+    if (!identity) {
+        return { isPlanAdmin: false, planName: "" };
+    }
+
+    const { subject } = identity;  // 返回用户 ID
+
+    // 查询行程设置表 planSettings 校验是否存在行程
+    const plan = await ctx.db
+    .query("planSettings")
+    .filter((q) => q.eq(q.field("planId"), planId))
+    .first();
+
+    if (plan && plan.userId === subject) // 行程存在且用户校验通过，返回 true
+        return { isPlanAdmin: true, planName: plan.travelPlace };
+    return { isPlanAdmin: false, planName: "" };
+};
+
+
 export const getUrl = mutation({
     args:{
         storageId: v.id("_storage"),
@@ -27,29 +56,37 @@ export const getUrl = mutation({
     }
 })
 
+// 获取行程设置 + 详细记录
 export const getSinglePlan = query({
   args: {
     id: v.id("planDetails")
   },
   handler: async (ctx, args) => {
-   
-    const identity = await getIdentityOrThrow(ctx);
-    const { plan, isPlanAdmin } = await validatePlanAccess(
-    ctx,
-    args.id,
-    identity.subject
+    // 校验用户身份，知道是谁在创建行程
+    const userId = await validateUser(ctx); 
+    // 读取详细记录
+    const plan = await ctx.db.get(args.id); 
+    // 行程不能为空
+    if (!plan) {
+      throw new ConvexError("Plan not found");
+    }
+    // 读取行程设置
+    const planData = await ctx.runQuery(
+      internal.travelplan.getPlanSettings, {
+          planId: args.id,
+      }) as Doc<"planSettings">;
+
+    console.log(
+      `getSinglePlan called by ${userId} for planId: ${args.id}`
     );
 
-    const planSettings = await getCurrentPlanSettings(ctx, plan._id);
-    console.log(
-    `getSinglePlan called by ${identity.subject} for planid: ${args.id}`
-    );
     return {
         ...plan,
-        travelType: planSettings?.travelType ?? "",
-        fromDate: planSettings?.fromDate,
-        toDate: planSettings?.toDate,
-        travelPersons: planSettings?.travelPersons,
+        travelType: planData?.travelType ?? "",
+        fromDate: planData?.fromDate,
+        toDate: planData?.toDate,
+        travelPersons: planData?.travelPersons,
+        // budget:planData?.budget,
     };
   },
 });

@@ -10,10 +10,24 @@ import React from 'react'
 import MapContainer from '@/components/MapContainer';
 import { Chat } from '@/components/chat/chat';
 import GeneratePlan from '@/components/travelplan/GeneratePlan';
+import Plan from '@/components/travelplan/plan';
 
-const PlanDetails = ({params} : {params:{planId : string}}) => {
+const PlanDetails = (
+  {
+    params, 
+    searchParams,
+  } : 
+  {
+    params:{planId : string};
+    searchParams?: { isNewPlan: string };
+  }
+) => {
 
   const { planId } = params;
+
+  const isNewPlan = searchParams && searchParams.isNewPlan
+      ? Boolean(searchParams.isNewPlan)
+      : false;
 
   // // 读取数据表
   // const plan = useQuery(api.travelplan.getPlanById,{planId});
@@ -37,7 +51,7 @@ const PlanDetails = ({params} : {params:{planId : string}}) => {
         {/* 左边 */}
         <ResizablePanel defaultSize={50} minSize={20} className='h-screen border'>
           <div className="h-full overflow-auto flex items-center justify-center">
-            <GeneratePlan/>
+            <Plan planId={planId} isNewPlan={isNewPlan}/>
           </div>
         </ResizablePanel>
 

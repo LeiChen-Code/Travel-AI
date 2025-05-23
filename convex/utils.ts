@@ -23,11 +23,11 @@ export const validateUser = async (
   const user = await ctx.db
   .query("users")
   .filter((q) => q.eq(q.field("email"), identity.email))
-  .collect();
+  .first();
 
-  if (user.length === 0) {
+  if (!user) {
       throw new ConvexError("用户不存在");
   }
 
-  return user[0]._id; // 获取用户 Id 返回
+  return user._id; // 获取用户 Id 返回
 };

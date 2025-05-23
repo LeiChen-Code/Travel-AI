@@ -14,10 +14,13 @@ const handleClerkWebhook = httpAction(async (ctx, request) => {
     // 该 webhook 将在通过 clerk 的登录界面验证用户后调用
     const event = await validateRequest(request);
     if (!event) {
+        console.log("无法验证 Clerk webhook 请求");
         return new Response("Error occured", {
         status: 400,
         });
     }
+    
+    console.log("Received Clerk event:", event.type, event.data.id);
     switch (event.type) {
         case "user.created":  // 完成验证后将调用 createUser 函数
             await ctx.runMutation(internal.users.createUser, {
@@ -43,6 +46,7 @@ const handleClerkWebhook = httpAction(async (ctx, request) => {
             });
             break;
     }
+    
     return new Response(null, {
         status: 200,
     });

@@ -19,6 +19,7 @@ const Itinerary = ({itinerary, planId, isLoading, allowEdit}: ItineraryProps) =>
         </h2>
         {allowEdit && !isLoading && <AddIternaryDay planId={planId} />}
       </div>
+      
       {!isLoading ? (
         <Timeline itinerary={itinerary} planId={planId} allowEdit={allowEdit}/>
       ) : (

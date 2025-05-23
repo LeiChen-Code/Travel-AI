@@ -11,18 +11,20 @@ import React, {
   useEffect,
 } from "react";
 
-import AccessDenied from "@/components/plan/AccessDenied";
+import AccessDenied from "@/components/travelplan/AccessDenied";
 
+// 定义了旅行计划的内容生成状态类型
 type planStateType = Doc<"planDetails">["contentGenerationState"] & {
   weather: boolean;
 };
 
+// 定义上下文的整体类型
 type PlanContextType = {
   planState: planStateType;
   setPlanState: Dispatch<SetStateAction<planStateType>>;
   shouldShowAlert: boolean;
   plan:
-    | (Doc<"planDetails"> & { isSharedPlan: boolean } & Pick<
+    | (Doc<"planDetails">  & Pick<
           Doc<"planSettings">,
           | "travelType"
           | "travelPersons"
@@ -33,7 +35,7 @@ type PlanContextType = {
     | undefined;
   isLoading: boolean;
 };
-
+// 为状态提供默认值
 const defaultPlanState: planStateType = {
   imagination: false,
   abouttheplace: false,
@@ -44,6 +46,7 @@ const defaultPlanState: planStateType = {
   weather: false,
 };
 
+// 创建上下文对象
 const PlanContext = createContext<PlanContextType | undefined>({
   planState: defaultPlanState,
   setPlanState: () => {},
@@ -52,6 +55,7 @@ const PlanContext = createContext<PlanContextType | undefined>({
   isLoading: false,
 });
 
+// 获取上下文的函数
 export const usePlanContext = () => {
   const context = useContext(PlanContext);
   if (context === undefined) {
@@ -60,27 +64,29 @@ export const usePlanContext = () => {
   return context;
 };
 
+// 管理和更新上下文状态
 const PlanContextProvider = ({
   children,
   planId,
-  isPublic,
 }: {
   children: React.ReactNode;
   planId: string;
   isPublic: boolean;
 }) => {
+  // 状态初始化
   const [planState, setPlanState] = useState<planStateType>(defaultPlanState);
 
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams();  // 获取 URL 中的查询参数，判断是否为新计划
 
   const isNewPlan = Boolean(searchParams.get("isNewPlan"));
 
+  // 根据 planId、isNewPlan 获取计划的相关信息
   const { shouldShowAlert, plan, isLoading, error } = usePlan(
     planId,
     isNewPlan,
-    isPublic
   );
 
+  // 监听 plan 的变化
   useEffect(() => {
     if (isLoading || !plan) return;
 
@@ -88,6 +94,7 @@ const PlanContextProvider = ({
       ...plan.contentGenerationState,
       weather: state.weather,
     }));
+
   }, [plan]);
 
   return (

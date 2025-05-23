@@ -1,12 +1,13 @@
-import { Doc } from "@/convex/_generated/dataModel";
+import { Id } from "@/convex/_generated/dataModel";
 import { api } from "@/convex/_generated/api";
 import { ConvexError } from "convex/values";
 import { useQuery } from "convex/react";
 
-const usePlan = (planId: string, isNewPlan: boolean, isPublic: boolean) => {
+const usePlan = (planId: string, isNewPlan: boolean) => {
   try {
+    // 调用内部接口获取行程记录
     const plan = useQuery(api.travelplan.getSinglePlan, {
-      id: planId as Doc<"planDetails">["_id"],
+      id: planId as Id<"planDetails">,
     });
 
     const shouldShowAlert =
@@ -24,6 +25,7 @@ const usePlan = (planId: string, isNewPlan: boolean, isPublic: boolean) => {
       plan,
       isLoading: !plan,
     };
+
   } catch (error) {
     let errorMessage: string = "Something went wrong!";
     if (error instanceof ConvexError) {

@@ -40,8 +40,10 @@ const ItineraryDayForm = ({planId, setOpen}: ItineraryDayFormProps) => {
     isDirty,
   } = useItineraryForm(planId);
 
+  // 调用 addDayInItinerary 接口定义 修改行程表 的函数
   const updateItinerary = useMutation(api.travelplan.addDayInItinerary);
 
+  // 保存行程操作
   const onSaveEditList = (data: {itinerary: ItineraryType}) => {
     if (!planId) return;
     if (
@@ -61,17 +63,19 @@ const ItineraryDayForm = ({planId, setOpen}: ItineraryDayFormProps) => {
     <form onSubmit={handleSubmit(onSaveEditList)} className="flex flex-col gap-1">
       <h2>New Day</h2>
       <Tabs defaultValue="morning" className="" onValueChange={handleTabChange}>
+
         <TabsList>
           <TabsTrigger value="morning">
-            <Sunrise className="w-4 h-4 text-blue-500 mr-2" /> Morning
+            <Sunrise className="w-4 h-4 text-blue-500 mr-2" /> 早上
           </TabsTrigger>
           <TabsTrigger value="afternoon">
-            <Sun className="w-4 h-4 text-yellow-500 mr-2" /> Afternoon
+            <Sun className="w-4 h-4 text-yellow-500 mr-2" /> 下午
           </TabsTrigger>
           <TabsTrigger value="evening">
-            <Sunset className="w-4 h-4 text-gray-600 mr-2" /> Evening
+            <Sunset className="w-4 h-4 text-gray-600 mr-2" /> 晚上
           </TabsTrigger>
         </TabsList>
+
         <CustomTabContent
           fields={morningFields}
           addNewControl={addNewControl}
@@ -105,10 +109,10 @@ const ItineraryDayForm = ({planId, setOpen}: ItineraryDayFormProps) => {
 
       <div className="flex justify-start items-center gap-2 mt-5">
         <Button size="sm" variant="outline" disabled={!isValid && isDirty}>
-          Save
+          保存
         </Button>
         <Button onClick={() => setOpen(false)} size="sm" variant="outline">
-          Cancel
+          取消
         </Button>
       </div>
     </form>

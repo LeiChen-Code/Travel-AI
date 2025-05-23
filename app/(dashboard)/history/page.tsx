@@ -8,7 +8,7 @@ import React from 'react'
 const HistoryPlan = () => {
 
   const historyPlans = useQuery(api.travelplan.getHistoryPlan)
-
+  
   return (
     <div className='flex flex-col gap-6'>
       <header className='w-full flex gap-4 items-center justify-start px-6 py-3 border-b border-gray-200 bg-white'>

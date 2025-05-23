@@ -10,14 +10,21 @@ export const createUser = internalMutation({
         firstName: v.optional(v.string()),
         lastName: v.optional(v.string()),
     }, handler: async(ctx, args) => {
-        // 第一个参数是表格，第二个参数传入内容
-        await ctx.db.insert("users", {
-            clerkId: args.clerkId,
-            email: args.email,
-            imageUrl: args.imageUrl,
-            firstName: args.firstName,
-            lastName: args.lastName,
-        })
+        try{
+            // 第一个参数是表格，第二个参数传入内容
+          await ctx.db.insert("users", {
+              clerkId: args.clerkId,
+              email: args.email,
+              imageUrl: args.imageUrl,
+              firstName: args.firstName,
+              lastName: args.lastName,
+          })
+          console.log(`User record created successfully: ${args.email}`);
+        } catch(error){
+            console.error("Error creating user record:", error);
+            throw new ConvexError("创建用户失败");
+        }
+        
     }
 })
 

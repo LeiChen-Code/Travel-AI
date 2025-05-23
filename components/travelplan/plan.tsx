@@ -8,19 +8,16 @@ import PackingChecklist from "@/components/sections/PackingChecklist";
 
 import { usePlanContext } from "@/contexts/PlanContextProvider";
 // import Weather from "@/components/sections/Weather";
-import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
 
 
 type PlanProps = {
   planId: string;
   isNewPlan: boolean;
-  isPublic: boolean;
 };
 
 const Plan = ({ planId }: PlanProps) => {
-  const { isLoading, plan, shouldShowAlert } = usePlanContext();
 
+  const { isLoading, plan, shouldShowAlert } = usePlanContext();
 
   return (
     <section className="h-full flex flex-col gap-5">

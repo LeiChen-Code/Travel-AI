@@ -59,3 +59,30 @@ export interface PackingChecklistProps {
   allowEdit: boolean;
 };
 
+// 定义 timeline 组件的属性
+export interface TimelineProps {
+  itinerary: Doc<"planDetails">["itinerary"] | undefined;
+  planId: string;
+  allowEdit: boolean;
+};
+
+// 定义 ItineraryDayHeaderProps 组件的属性
+export interface ItineraryDayHeaderProps {
+  title: string;
+  planId: string;
+  allowEdit: boolean;
+};
+
+// 定义生成行程需要的属性
+export interface GeneratePlanProps{
+  planTitle: string,
+  travelPlace: string,
+  fromDate: number,
+  toDate: number,
+  noOfDays: string,
+  travelPersons: number,
+  travelType: string | undefined,
+  budget: number,
+  imageURL: string,
+  imageStorageId: Id<"_storage">
+}
