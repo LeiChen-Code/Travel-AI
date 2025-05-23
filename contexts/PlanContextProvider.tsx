@@ -57,7 +57,10 @@ const PlanContext = createContext<PlanContextType | undefined>({
 
 // 获取上下文的函数
 export const usePlanContext = () => {
+
+  console.log("usePlanContext");
   const context = useContext(PlanContext);
+  
   if (context === undefined) {
     throw new Error("usePlanContext must be used within a PlanContextProvider");
   }

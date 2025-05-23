@@ -1,3 +1,4 @@
+"use client"
 import NewPlanForm from '@/components/NewPlanForm'
 import React from 'react'
 

@@ -32,6 +32,8 @@ export default function AboutThePlace({content, isLoading, planId, allowEdit}: A
     });
   };
 
+  
+
   return (
     <SectionWrapper id="abouttheplace">
       <HeaderWithEditIcon

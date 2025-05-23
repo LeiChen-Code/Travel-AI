@@ -136,7 +136,6 @@ export const createPlan = mutation({
 
         // 验证用户存在以后，将用户新创建的行程信息插入行程设置表 "planSettings"
         const plan = await ctx.db.insert('planSettings',{
-            ...args,
             userId: userId,
             planId: newPlan,
             planTitle: args.planTitle,

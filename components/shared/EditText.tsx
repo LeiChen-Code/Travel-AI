@@ -48,6 +48,7 @@ const EditText = ({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 pt-2">
+        
         <FormField
           control={form.control}
           name="textContent"
@@ -65,12 +66,13 @@ const EditText = ({
             </FormItem>
           )}
         />
+
         <div className="flex gap-2 items-center">
           <Button type="submit" variant="outline" size="sm">
-            Save
+            保存
           </Button>
           <Button onClick={toggleEditMode} size="sm" variant="outline">
-            Cancel
+            取消
           </Button>
         </div>
       </form>

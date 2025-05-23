@@ -41,7 +41,7 @@ export default function PackingChecklist({
         handleToggleEditMode={handleToggleEditMode}
         hasData={checklist != null && checklist.length != 0}
         icon={<Backpack className="mr-2" />}
-        title="Packing Checklist"
+        title="旅行用品清单"
         isLoading={isLoading}
       />
 

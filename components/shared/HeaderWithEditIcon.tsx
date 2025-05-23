@@ -22,7 +22,7 @@ const HeaderWithEditIcon = ({
   return (
     <div className="mb-2 flex justify-between items-center">
       <h2
-        className="text-lg font-semibold 
+        className="text-lg font-medium
                 tracking-wide flex items-center"
       >
         {icon} {title}

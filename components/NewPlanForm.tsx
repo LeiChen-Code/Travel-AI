@@ -29,9 +29,11 @@ import GenerateThumbnail from "@/components/GenerateThumbnail"
 import { Loader } from "lucide-react"
 import { Id } from "@/convex/_generated/dataModel"
 import { DateRange } from "react-day-picker"
-import { useRouter } from "next/navigation"
+import { redirect, useRouter } from "next/navigation"
 import { differenceInDays } from "date-fns"
 import { generatePlanAction } from "@/lib/actions/generatePlanActions"
+import { useAction, useMutation } from "convex/react"
+import { api } from "@/convex/_generated/api"
 
 const travelStyles = ['悠闲', '适中', '紧凑'];
 
@@ -65,8 +67,13 @@ const NewPlanForm = () => {
     const [imageURL, setImageURL] = useState('');
     const [imageStorageId, setImageStorageId] = useState<Id<"_storage"> | null>(null);
     
-    // 
+    // AI 生成状态
     const [pendingAIPlan, startTransactionAiPlan] = useTransition();
+    // 调用函数
+    const prepare1 = useAction(api.travelplan.prepareBatch1);
+    const prepare2 = useAction(api.travelplan.prepareBatch2);
+    const prepare3 = useAction(api.travelplan.prepareBatch3);
+    const createplan = useMutation(api.travelplan.createPlan);
     const { toast } = useToast();
     
     // 定义表单
@@ -105,8 +112,9 @@ const NewPlanForm = () => {
                     setIsSubmitting(false);
                     throw new Error("请选择完整的日期范围");
                 }
-                
-                const planId = await generatePlanAction({
+                console.log("开始调用 AI");
+
+                const planId = await createplan({
                     planTitle: data.planTitle,  // 行程标题
                     travelPlace: data.travelPlace,  // 行程地点
                     fromDate: range.from.getTime(),  // 转为时间戳
@@ -117,6 +125,7 @@ const NewPlanForm = () => {
                     budget: data.budget,  // 预算
                     imageURL,  // 封面 url
                     imageStorageId, // 封面存储 ID
+                    isGeneratedUsingAI: true,
                 });
                                 
                 if (planId === null) {
@@ -126,28 +135,32 @@ const NewPlanForm = () => {
                         variant: 'destructive',
                     });
                 }
+
+                await prepare1({planId: planId});
+                await prepare2({planId: planId});
+                await prepare3({planId: planId});
+
+                redirect(`/plans/${planId}/plan?isNewPlan=true`);
             });
 
             toast({
                 title:"行程创建成功！"
             })
 
-            setIsSubmitting(false);
-
+            
         } catch (error) {
             console.log(error);
             toast({
                 title: '创建行程出错',
                 variant: 'destructive'
             })
-            setIsSubmitting(false);
         }
     }
 
     return (
         // 行程标题、行程地点、行程日期、旅行人数、旅行模式、预算、行程封面
         <Form {...form}>
-            <form className="mt-8 flex w-full flex-col">
+            <form className="mt-8 flex w-full flex-col" onSubmit={form.handleSubmit(onSubmit)}>
                 <div className="flex flex-col gap-[30px] border-b border-black-5 pb-10">
                     <FormField
                         control={form.control}
@@ -258,7 +271,7 @@ const NewPlanForm = () => {
                 </div>
                 
                 <Button 
-                    onClick={() => form.handleSubmit(onSubmit)} 
+                    // onClick={form.handleSubmit(onSubmit)} 
                     type="submit" 
                     className="text-white-1"
                     disabled={pendingAIPlan}

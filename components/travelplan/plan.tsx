@@ -20,7 +20,7 @@ const Plan = ({ planId }: PlanProps) => {
   const { isLoading, plan, shouldShowAlert } = usePlanContext();
 
   return (
-    <section className="h-full flex flex-col gap-5">
+    <section className="w-full h-full flex flex-col gap-5">
 
       {/* 展示行程设置 */}
       {/* <PlanMetaData

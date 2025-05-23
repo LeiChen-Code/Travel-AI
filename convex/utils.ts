@@ -5,6 +5,7 @@ import { ActionCtx, MutationCtx, QueryCtx } from "./_generated/server";
 export const getIdentityOrThrow = async (
   ctx: ActionCtx | QueryCtx | MutationCtx
 ) => {
+  console.log("正在校验用户身份");
   // 获取用户身份
   const identity = await ctx.auth.getUserIdentity();
   if (!identity) {
