@@ -5,8 +5,7 @@ import BestTimeToVisit from "@/components/sections/BestTimeToVisit";
 import Itinerary from "@/components/sections/Itinerary";
 import LocalFoodRecommendations from "@/components/sections/LocalFood";
 import PackingChecklist from "@/components/sections/PackingChecklist";
-
-import { usePlanContext } from "@/contexts/PlanContextProvider";
+import usePlan from "@/hooks/usePlan";
 // import Weather from "@/components/sections/Weather";
 
 
@@ -15,9 +14,17 @@ type PlanProps = {
   isNewPlan: boolean;
 };
 
-const Plan = ({ planId }: PlanProps) => {
+const Plan = ({ planId, isNewPlan }: PlanProps) => {
 
-  const { isLoading, plan, shouldShowAlert } = usePlanContext();
+  const { isLoading, plan, shouldShowAlert, error } = usePlan(planId, isNewPlan);
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  if (!plan) {
+    return <div>Plan not found.</div>;
+  }
 
   return (
     <section className="w-full h-full flex flex-col gap-5">

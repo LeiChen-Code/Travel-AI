@@ -56,7 +56,7 @@ const EditText = ({
             <FormItem>
               <FormControl>
                 <Textarea
-                  placeholder="What do you think about this place"
+                  placeholder="填写关于该地点的介绍"
                   {...field}
                   rows={5}
                   className="h-full"

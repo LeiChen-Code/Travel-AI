@@ -22,7 +22,7 @@ const HeaderWithEditIcon = ({
   return (
     <div className="mb-2 flex justify-between items-center">
       <h2
-        className="text-lg font-medium
+        className="text-base font-medium
                 tracking-wide flex items-center"
       >
         {icon} {title}
@@ -31,10 +31,10 @@ const HeaderWithEditIcon = ({
         <Button
           variant="outline"
           size="icon"
-          className="rounded-full"
+          className="rounded-full h-7 w-7"
           onClick={handleToggleEditMode}
         >
-          {!hasData ? <PlusIcon className="h-4 w-4" /> : <PencilIcon className="h-4 w-4" />}
+          {!hasData ? <PlusIcon className="h-4 w-4" /> : <PencilIcon className="h-3 w-3" />}
         </Button>
       )}
     </div>

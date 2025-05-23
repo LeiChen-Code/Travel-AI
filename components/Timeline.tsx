@@ -25,9 +25,9 @@ const Timeline = ({itinerary, planId, allowEdit}: TimelineProps) => {
     <ol className="relative border-s border-gray-200 dark:border-foreground/40 ml-10 mt-5">
       {filteredItinerary?.map((day) => (
         <li className="mb-10 ms-6" key={day.title}>
-          <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+          <span className="absolute flex items-center justify-center w-6 h-6 bg-white-1 rounded-full -start-3 ring-1 ring-white ring-gray-1">
             <svg
-              className="w-2.5 h-2.5 text-blue-800 dark:text-blue-300"
+              className="w-2.5 h-2.5 text-gray-4 "
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
@@ -90,8 +90,8 @@ const Activity = ({
       <ul className="space-y-1 text-muted-foreground pl-2">
         {activity.map((act, index) => (
           <li key={index}>
-            <div className="w-full p-1 overflow-hidden">
-              <span className=" text-foreground font-semibold">{act.itineraryItem}</span>
+            <div className="w-full p-1 text-base overflow-hidden">
+              <span className=" text-foreground font-medium">{act.itineraryItem}</span>
               <p className="max-w-md md:max-w-full text-wrap whitespace-pre-line">
                 {act.briefDescription}
               </p>

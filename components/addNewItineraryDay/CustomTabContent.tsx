@@ -68,10 +68,10 @@ export default function CustomTabContent({
             <div className="flex flex-col gap-2 justify-center items-start w-full">
               <div className="flex justify-between w-full items-center">
                 <Label
-                  className="text-sm font-bold font-sans tracking-wide"
+                  className="text-sm font-medium font-sans tracking-wide"
                   htmlFor={`itinerary.activities.${tabName}.${index}.itineraryItem`}
                 >
-                  Name of the Place
+                  地名
                 </Label>
                 <Button
                   className="text-gray-500 rounded-full p-3"
@@ -84,7 +84,7 @@ export default function CustomTabContent({
               </div>
               <Input
                 {...register(`itinerary.activities.${tabName}.${index}.itineraryItem` as const)}
-                placeholder="Name of the place"
+                placeholder="添加地名"
                 defaultValue={field.itineraryItem}
                 id={`itinerary.activities.${tabName}.${index}.itineraryItem`}
                 className={cn(
@@ -102,14 +102,14 @@ export default function CustomTabContent({
             <div className="flex flex-col gap-2 justify-center items-start w-full">
               <Label
                 htmlFor={`itinerary.activities.${tabName}.${index}.briefDescription`}
-                className="text-sm font-bold font-sans tracking-wide"
+                className="text-sm font-medium font-sans tracking-wide"
               >
-                Description of the place
+                地点及活动描述
               </Label>
 
               <Textarea
                 {...register(`itinerary.activities.${tabName}.${index}.briefDescription` as const)}
-                placeholder="How would you describe it?"
+                placeholder="添加描述"
                 defaultValue={field.itineraryItem}
                 id={`itinerary.activities.${tabName}.${index}.briefDescription`}
                 className={cn(
@@ -127,7 +127,7 @@ export default function CustomTabContent({
         );
       })}
       <Button onClick={() => addNewControl(tabName)} variant="outline" className="text-center">
-        <Plus /> Add New Place
+        <Plus /> 新增地点
       </Button>
     </TabsContent>
   );

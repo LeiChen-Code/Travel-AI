@@ -40,7 +40,7 @@ export default function BestTimeToVisit({
         shouldShowEditIcon={!editMode && allowEdit}
         handleToggleEditMode={handleToggleEditMode}
         hasData={typeof content === "string" && content.length > 0}
-        icon={<Clock3 className="mr-2" />}
+        icon={<Clock3 className="mr-2 w-5 h-5" />}
         title="最佳旅行时间"
         isLoading={isLoading}
       />

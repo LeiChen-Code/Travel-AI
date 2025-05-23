@@ -40,7 +40,7 @@ export default function PackingChecklist({
         shouldShowEditIcon={!editMode && allowEdit}
         handleToggleEditMode={handleToggleEditMode}
         hasData={checklist != null && checklist.length != 0}
-        icon={<Backpack className="mr-2" />}
+        icon={<Backpack className="mr-2 w-5 h-5" />}
         title="旅行用品清单"
         isLoading={isLoading}
       />

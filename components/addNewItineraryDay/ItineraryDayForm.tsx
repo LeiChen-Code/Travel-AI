@@ -61,7 +61,7 @@ const ItineraryDayForm = ({planId, setOpen}: ItineraryDayFormProps) => {
 
   return (
     <form onSubmit={handleSubmit(onSaveEditList)} className="flex flex-col gap-1">
-      <h2>New Day</h2>
+      <h2 className="font-medium">新增一天</h2>
       <Tabs defaultValue="morning" className="" onValueChange={handleTabChange}>
 
         <TabsList>

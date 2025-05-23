@@ -28,26 +28,26 @@ export default function ItineraryDayHeader({title, planId, allowEdit}: Itinerary
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="flex justify-between mb-2 text-lg font-bold leading-2 text-foreground ">
+    <div className="flex justify-between mb-2 text-base font-medium leading-2 text-foreground ">
       {/* 标题 */}
-      <span>{title}</span>
+      <span className="text-black-1">{title}</span>
 
       {allowEdit && (
-        <AlertDialog open={open} onOpenChange={setOpen}>
+        <AlertDialog open={open} onOpenChange={setOpen} >
           <AlertDialogTrigger>
             {/* 删除按钮 */}
             <Button
               asChild
               size="icon"
               variant="ghost"
-              className="p-1 rounded-full bg-background/50"
+              className="w-7 h-7 p-1 rounded-full bg-background/50"
               onClick={() => setOpen(true)}
             >
-              <TrashIcon className="h-6 w-6 text-red-500 dark:text-foreground dark:hover:text-red-500 hover:scale-105 transition-all duration-300" />
+              <TrashIcon className=" text-red-500 dark:text-foreground dark:hover:text-red-500 hover:scale-105 transition-all duration-300" />
             </Button>
           </AlertDialogTrigger>
 
-          <AlertDialogContent>
+          <AlertDialogContent className="bg-white-1">
 
             <AlertDialogHeader>
               <AlertDialogTitle>请确认你的操作</AlertDialogTitle>

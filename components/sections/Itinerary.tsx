@@ -12,10 +12,10 @@ const Itinerary = ({itinerary, planId, isLoading, allowEdit}: ItineraryProps) =>
     <SectionWrapper id="itinerary">
       <div className="mb-2 flex justify-between items-center">
         <h2
-          className="text-lg font-medium
+          className="text-base font-medium
                 tracking-wide flex items-center"
         >
-          <Navigation className="mr-2" /> 行程表
+          <Navigation className="w-5 h-5 mr-2" /> 行程表
         </h2>
         {allowEdit && !isLoading && <AddIternaryDay planId={planId} />}
       </div>

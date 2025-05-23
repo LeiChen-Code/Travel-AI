@@ -17,14 +17,14 @@ export function AddIternaryDay({planId}: {planId: string}) {
     <Dialog open={open} onOpenChange={setOpen}>
       
       <DialogTrigger asChild>
-        <Button variant="outline" className="flex gap-2">
+        <Button variant="outline" className="bg-white-1 flex gap-2">
           {/* icon */}
-          <PlusCircleIcon className="h-5 w-5" />
+          <PlusCircleIcon className="h-6 w-6" />
           <span>新增一天</span>
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="bg-white-1 sm:max-w-[500px]">
         <ItineraryDayForm planId={planId} setOpen={setOpen} />
       </DialogContent>
       

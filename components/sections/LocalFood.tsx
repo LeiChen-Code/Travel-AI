@@ -42,7 +42,7 @@ export default function LocalFoodRecommendations({
         shouldShowEditIcon={!editMode && allowEdit}
         handleToggleEditMode={handleToggleEditMode}
         hasData={recommendations != null && recommendations.length != 0}
-        icon={<Utensils className="mr-2" />}
+        icon={<Utensils className="mr-2 w-5 h-5" />}
         title="当地美食推荐"
         isLoading={isLoading}
       />

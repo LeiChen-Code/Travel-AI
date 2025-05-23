@@ -40,7 +40,7 @@ export default function AboutThePlace({content, isLoading, planId, allowEdit}: A
         shouldShowEditIcon={!editMode && allowEdit}
         handleToggleEditMode={handleToggleEditMode}
         hasData={typeof content === "string" && content.length > 0}
-        icon={<Info className="mr-2" />}
+        icon={<Info className="mr-2 w-5 h-5"/>}
         title="目的地介绍"
         isLoading={isLoading}
       />
