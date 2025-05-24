@@ -6,6 +6,9 @@ import Itinerary from "@/components/sections/Itinerary";
 import LocalFoodRecommendations from "@/components/sections/LocalFood";
 import PackingChecklist from "@/components/sections/PackingChecklist";
 import usePlan from "@/hooks/usePlan";
+import { useEffect, useState } from "react";
+import AlertForAI from "../sections/AlertForAI";
+import { useToast } from "@/hooks/use-toast";
 // import Weather from "@/components/sections/Weather";
 
 
@@ -17,17 +20,39 @@ type PlanProps = {
 const Plan = ({ planId, isNewPlan }: PlanProps) => {
 
   const { isLoading, plan, shouldShowAlert, error } = usePlan(planId, isNewPlan);
+  const { toast } = useToast();
+
+  // 监听 error 和 plan 并弹出 toast 提示报错
+  useEffect(() => {
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "出错了",
+        description: error,
+      });
+    } else if (!plan) {
+      toast({
+        variant: "destructive",
+        title: "未找到行程",
+        description: "该行程不存在或已被删除。",
+      });
+    }
+  }, [error, plan, toast]);
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return null;
   }
 
   if (!plan) {
-    return <div>Plan not found.</div>;
+    return null;
   }
 
   return (
+
     <section className="w-full h-full flex flex-col gap-5">
+      
+      {/* 在 AI 生成未完成前弹出提示框 */}
+      <AlertForAI show={shouldShowAlert} />
 
       {/* 展示行程设置 */}
       {/* <PlanMetaData
@@ -37,7 +62,6 @@ const Plan = ({ planId, isNewPlan }: PlanProps) => {
         fromDate={plan?.fromDate ?? undefined}
         toDate={plan?.toDate ?? undefined}
         planId={planId}
-        isPublished={plan?.isPublished ?? false}
         isLoading={isLoading}
       /> */}
       

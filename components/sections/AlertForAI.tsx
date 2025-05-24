@@ -1,6 +1,8 @@
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert";
 import {Loader} from "lucide-react";
 
+// 此组件提示用户等待AI生成
+
 const AlertForAI = ({show}: {show: boolean}) => {
   if (!show) return null;
   return (

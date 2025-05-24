@@ -36,6 +36,7 @@ const PlanDetails = (
         {/* 左边 */}
         <ResizablePanel defaultSize={50} minSize={20} className='h-screen border'>
           <div className="h-full w-full overflow-auto flex items-center justify-center">
+            {/* 展示行程 */}
             <Plan planId={planId} isNewPlan={isNewPlan}/>
           </div>
         </ResizablePanel>

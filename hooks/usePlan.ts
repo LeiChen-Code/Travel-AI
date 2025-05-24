@@ -13,7 +13,7 @@ const usePlan = (planId: string, isNewPlan: boolean) => {
     const shouldShowAlert =
       plan?.isGeneratedUsingAI &&
       isNewPlan &&
-      plan &&
+      plan &&  // contentGenerationState 中所有属性都要为 true 才表示行程全部生成完成
       Object.values(plan.contentGenerationState).some(
         (value) => value === false
       )
