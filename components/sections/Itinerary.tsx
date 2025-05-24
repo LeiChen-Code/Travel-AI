@@ -1,9 +1,7 @@
 import Timeline from "@/components/Timeline";
 import SectionWrapper from "@/components/sections/SectionWrapper";
 import {AddIternaryDay} from "@/components/addNewItineraryDay/AddItineraryDay";
-import {Button} from "@/components/ui/button";
 import {Skeleton} from "@/components/ui/skeleton";
-import {Doc} from "@/convex/_generated/dataModel";
 import {Navigation, PlusCircle, PlusCircleIcon, PlusIcon} from "lucide-react";
 import { ItineraryProps } from "@/types";
 

@@ -5,7 +5,7 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable"
 import React from 'react'
-import MapContainer from '@/components/MapContainer';
+import MapContainer from '@/components/map/MapContainer';
 import { Chat } from '@/components/chat/chat';
 import Plan from '@/components/travelplan/plan';
 

@@ -3,22 +3,9 @@ import { v } from "convex/values";
 
 export default defineSchema({
     planDetails:defineTable({
-        // planId: v.string(),  // planId 用于路由?
         isGeneratedUsingAI: v.boolean(),
-        // Id<"_storage"> 是 Convex 中用于引用存储在 Convex 存储系统中的文件的标识符类型
-        storageId: v.union(v.id("_storage"), v.null()),  
         userPrompt: v.string(),  // prompt
         abouttheplace: v.string(),  // 旅游地点介绍
-        // activitiestodo: v.array(v.string()),  // 活动列表
-        // topplacestovisit: v.array(
-        //     v.object({
-        //         name: v.string(),  // 名称
-        //         coordinates: v.object({  // 经纬度坐标
-        //             lat: v.float64(),
-        //             lng: v.float64(),
-        //         }),
-        //     })
-        // ),  // 热门景点推荐
         packingchecklist: v.array(v.string()),  // 旅行物品清单
         localfood: v.array(v.string()),  // 美食推荐
         userId: v.id("users"),  // 用户ID，连接用户表
@@ -30,18 +17,39 @@ export default defineSchema({
                     morning: v.array(
                         v.object({
                         itineraryItem: v.string(),
+                        place: v.object({  // 每个活动都要包括一个具体的地点
+                            name: v.string(),
+                            coordinates: v.object({
+                                lat: v.float64(),
+                                lng: v.float64(),
+                            }),
+                        }),
                         briefDescription: v.string(),
                         })
                     ),
                     afternoon: v.array(
                         v.object({
                         itineraryItem: v.string(),
+                        place: v.object({
+                            name: v.string(),
+                            coordinates: v.object({
+                                lat: v.float64(),
+                                lng: v.float64(),
+                            }),
+                        }),
                         briefDescription: v.string(),
                         })
                     ),
                     evening: v.array(
                         v.object({
                         itineraryItem: v.string(),
+                        place: v.object({
+                            name: v.string(),
+                            coordinates: v.object({
+                                lat: v.float64(),
+                                lng: v.float64(),
+                            }),
+                        }),
                         briefDescription: v.string(),
                         })
                     ),

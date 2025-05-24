@@ -31,7 +31,6 @@ import { Id } from "@/convex/_generated/dataModel"
 import { DateRange } from "react-day-picker"
 import { redirect, useRouter } from "next/navigation"
 import { differenceInDays } from "date-fns"
-import { generatePlanAction } from "@/lib/actions/generatePlanActions"
 import { useAction, useMutation } from "convex/react"
 import { api } from "@/convex/_generated/api"
 
@@ -44,6 +43,8 @@ const FormSchema = z.object({
   travelPersons: z.number(),
   budget: z.number(),
 })
+
+export type formSchemaType = z.infer<typeof FormSchema>;
 
 const NewPlanForm = () => {
 

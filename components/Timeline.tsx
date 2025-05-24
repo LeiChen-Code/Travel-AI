@@ -69,14 +69,21 @@ const Activity = ({
   heading,
   icon,
 }: {
-  activity: {itineraryItem: string; briefDescription: string}[];
+  activity: {
+    itineraryItem: string; 
+    briefDescription: string;
+    place: {
+      name: string;
+      coordinates: { lat: number; lng: number; }
+    }
+  }[];
   heading: string;
   icon: ReactNode;
 }) => {
   if (activity.length == 0) return null;
   return (
     <div className="flex flex-col gap-2 shadow-md p-2 bg-muted rounded-sm">
-      {/* 早上/下午/晚上 */}
+      {/* 标题：早上/下午/晚上 */}
       <h3
         className="text-sm leading-none
                   text-gray-600  w-max p-2 font-semibold
@@ -92,6 +99,15 @@ const Activity = ({
           <li key={index}>
             <div className="w-full p-1 text-base overflow-hidden">
               <span className=" text-foreground font-medium">{act.itineraryItem}</span>
+              {/* 地点信息 */}
+              {act.place && (
+                <div className="text-sm text-blue-700 ml-2">
+                  地点：{act.place.name}
+                  <span className="ml-2 text-gray-400">
+                    ({act.place.coordinates.lat}, {act.place.coordinates.lng})
+                  </span>
+                </div>
+              )}
               <p className="max-w-md md:max-w-full text-wrap whitespace-pre-line">
                 {act.briefDescription}
               </p>
@@ -99,6 +115,8 @@ const Activity = ({
           </li>
         ))}
       </ul>
+      
+
     </div>
   );
 };

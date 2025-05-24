@@ -78,15 +78,14 @@ export const generatebatch2 = (inputParams: OpenAIInputType) => {
 // 生成行程规划
 export const generatebatch3 = (inputParams: OpenAIInputType) => {
   // 补充地点
-  const description = `根据以下模式生成旅行行程：
-
+  const description = `根据以下模式，为用户指定的地点生成旅行行程：
   - 行程安排：
     - 一个包含指定天数行程详情的数组。
     - 每天的行程包括一个标题以及上午、下午和晚上的活动。
     - 活动描述如下：
       - 上午、下午、晚上：
-        - 每个时段都包含一个行程项目数组，每个项目都有一个描述和简要说明。
-  
+        - 每个时段都包含一个行程项目数组，每个项目都有一个描述、简要说明，以及具体地点的名称和经纬度。
+
   确保函数响应符合提供的模式，并采用 JSON 格式。响应内容不应包含模式定义之外的任何内容。`;
   return callOpenAIApi(getPropmpt(inputParams), batch3Schema, description);
 }

@@ -121,7 +121,6 @@ export const createPlan = mutation({
             localfood: [],
             besttimetovisit: "",
             itinerary: [],
-            storageId: null,
             isGeneratedUsingAI: args.isGeneratedUsingAI,
             contentGenerationState:{
                 imagination: state,
@@ -226,21 +225,23 @@ export const deletePlan = mutation({
       throw new ConvexError("你不是该行程的创建者, 无法删除行程!");
     }
 
-    // 删除存储系统中的内容
-    try {
-      if (plan.storageId) {
-        await ctx.storage.delete(plan.storageId as Id<"_storage">);
-      }
-    } catch (e) {
-      console.log(e);
-    }
-
     // 删除 planSettings 表的记录
     const planSettings = await ctx.db
       .query("planSettings")
       .filter((q) => q.eq(q.field("planId"), planId))
-      .collect();
-    if (planSettings) await ctx.db.delete(planSettings[0]?._id);
+      .first();
+    
+    // 删除存储系统中的封面
+    if (planSettings){
+      try {
+        if (planSettings.imageStorageId) {
+          await ctx.storage.delete(planSettings.imageStorageId as Id<"_storage">);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+      await ctx.db.delete(planSettings?._id);
+    } 
 
     // 删除行程记录
     await ctx.db.delete(planId);
@@ -255,22 +256,43 @@ export const addDayInItinerary = mutation({
       title: v.string(),
       activities: v.object({
         morning: v.array(
-          v.object({
+            v.object({
             itineraryItem: v.string(),
+            place: v.object({  // 每个活动都要包括一个具体的地点
+                name: v.string(),
+                coordinates: v.object({
+                    lat: v.float64(),
+                    lng: v.float64(),
+                }),
+            }),
             briefDescription: v.string(),
-          })
+            })
         ),
         afternoon: v.array(
-          v.object({
+            v.object({
             itineraryItem: v.string(),
+            place: v.object({
+                name: v.string(),
+                coordinates: v.object({
+                    lat: v.float64(),
+                    lng: v.float64(),
+                }),
+            }),
             briefDescription: v.string(),
-          })
+            })
         ),
         evening: v.array(
-          v.object({
+            v.object({
             itineraryItem: v.string(),
+            place: v.object({
+                name: v.string(),
+                coordinates: v.object({
+                    lat: v.float64(),
+                    lng: v.float64(),
+                }),
+            }),
             briefDescription: v.string(),
-          })
+            })
         ),
       }),
     }),
@@ -378,22 +400,43 @@ export const update_Itinerary = internalMutation({
         title: v.string(),
         activities: v.object({
           morning: v.array(
-            v.object({
+              v.object({
               itineraryItem: v.string(),
+              place: v.object({  // 每个活动都要包括一个具体的地点
+                  name: v.string(),
+                  coordinates: v.object({
+                      lat: v.float64(),
+                      lng: v.float64(),
+                  }),
+              }),
               briefDescription: v.string(),
-            })
+              })
           ),
           afternoon: v.array(
-            v.object({
+              v.object({
               itineraryItem: v.string(),
+              place: v.object({
+                  name: v.string(),
+                  coordinates: v.object({
+                      lat: v.float64(),
+                      lng: v.float64(),
+                  }),
+              }),
               briefDescription: v.string(),
-            })
+              })
           ),
           evening: v.array(
-            v.object({
+              v.object({
               itineraryItem: v.string(),
+              place: v.object({
+                  name: v.string(),
+                  coordinates: v.object({
+                      lat: v.float64(),
+                      lng: v.float64(),
+                  }),
+              }),
               briefDescription: v.string(),
-            })
+              })
           ),
         }),
       })
@@ -479,8 +522,7 @@ export const prepareBatch1 = action({
             );
         }
 
-        // ! 调用 generatebatch1 生成 目的地介绍 和 最佳旅行时间
-        // ! 此处要修改
+        // 调用 generatebatch1 生成 目的地介绍 和 最佳旅行时间
         const completion = await generatebatch1(emptyPlan.userPrompt);
         // 解析 AI 的响应
         const nameMsg = completion?.choices[0]?.message?.tool_calls?.[0].function?.arguments as string;
