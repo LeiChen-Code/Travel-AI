@@ -57,10 +57,8 @@ export default defineSchema({
             })
         ),
         contentGenerationState: v.object({
-            imagination: v.boolean(),
+            //imagination: v.boolean(),
             abouttheplace: v.boolean(),
-            // activitiestodo: v.boolean(),
-            // topplacestovisit: v.boolean(),
             itinerary: v.boolean(),
             localfood: v.boolean(),
             packingchecklist: v.boolean(),

@@ -111,14 +111,14 @@ const EditList = ({arrayData, handleToggleEditMode, updateData}: EditListProps) 
 
         <div className="flex justify-between gap-2 mt-5 w-[90%]">
           <Button onClick={addNewControl} variant="outline" className="text-center">
-            <Plus /> Add New Item
+            <Plus /> 新增表项
           </Button>
           <div className="flex gap-2 justify-between">
             <Button disabled={!isSubmittable} size="sm" variant="outline">
-              Save
+              保存
             </Button>
             <Button onClick={handleToggleEditMode} size="sm" variant="outline">
-              Cancel
+              取消
             </Button>
           </div>
         </div>

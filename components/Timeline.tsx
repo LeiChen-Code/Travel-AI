@@ -2,6 +2,7 @@ import ItineraryDayHeader from "@/components/ItineraryDayHeader";
 import { TimelineProps } from "@/types";
 import { Sun, Sunrise, Sunset, TrashIcon } from "lucide-react";
 import { ReactNode } from "react";
+import { useMapContext } from "@/contexts/MapContext";
 
 // 此组件定义行程时间表
 const Timeline = ({itinerary, planId, allowEdit}: TimelineProps) => {
@@ -80,6 +81,9 @@ const Activity = ({
   heading: string;
   icon: ReactNode;
 }) => {
+  // 设置点击地名的状态
+  const { setSelectedLocation } = useMapContext();
+  
   if (activity.length == 0) return null;
   return (
     <div className="flex flex-col gap-2 shadow-md p-2 bg-muted rounded-sm">
@@ -102,9 +106,12 @@ const Activity = ({
               {/* 地点信息 */}
               {act.place && (
                 <div className="text-sm text-blue-700 ml-2">
-                  地点：{act.place.name}
-                  <span className="ml-2 text-gray-400">
-                    ({act.place.coordinates.lat}, {act.place.coordinates.lng})
+                  {/* 设置点击事件 */}
+                  <span className="cursor-pointer" onClick={() => setSelectedLocation({
+                      name: act.place.name,
+                      position: [act.place.coordinates.lng, act.place.coordinates.lat],
+                    })}>
+                    地点：{act.place.name}
                   </span>
                 </div>
               )}

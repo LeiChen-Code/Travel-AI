@@ -59,17 +59,23 @@ export const batch3Schema = {
                                     properties: {
                                         itineraryItem: { type: "string", description: "About the itinerary item" },
                                         briefDescription: { type: "string", description: "Elaborate about the place suggested" },
-                                        placeName: { type: "string", description: "Name of the place" },
-                                        coordinates: { 
+                                        place: {
                                             type: "object",
                                             properties: {
-                                                lat: { type: "number", description: "Latitude of the place" },
-                                                lng: { type: "number", description: "Longitude of the place" }
+                                                name: { type: "string", description: "Name of the place" },
+                                                coordinates: {
+                                                    type: "object",
+                                                    properties: {
+                                                        lat: { type: "number", description: "Latitude of the place" },
+                                                        lng: { type: "number", description: "Longitude of the place" }
+                                                    },
+                                                    required: ["lat", "lng"]
+                                                }
                                             },
-                                            required: ["lat", "lng"]
+                                            required: ["name", "coordinates"]
                                         }
                                     },
-                                    required: ["itineraryItem", "briefDescription", "placeName", "coordinates"],
+                                    required: ["itineraryItem", "briefDescription", "place"],
                                 },
                             },
                             afternoon: {
@@ -79,17 +85,23 @@ export const batch3Schema = {
                                     properties: {
                                         itineraryItem: { type: "string", description: "About the itinerary item" },
                                         briefDescription: { type: "string", description: "Elaborate about the place suggested" },
-                                        placeName: { type: "string", description: "Name of the place" },
-                                        coordinates: { 
+                                        place: {
                                             type: "object",
                                             properties: {
-                                                lat: { type: "number", description: "Latitude of the place" },
-                                                lng: { type: "number", description: "Longitude of the place" }
+                                                name: { type: "string", description: "Name of the place" },
+                                                coordinates: {
+                                                    type: "object",
+                                                    properties: {
+                                                        lat: { type: "number", description: "Latitude of the place" },
+                                                        lng: { type: "number", description: "Longitude of the place" }
+                                                    },
+                                                    required: ["lat", "lng"]
+                                                }
                                             },
-                                            required: ["lat", "lng"]
+                                            required: ["name", "coordinates"]
                                         }
                                     },
-                                    required: ["itineraryItem", "briefDescription", "placeName", "coordinates"],
+                                    required: ["itineraryItem", "briefDescription", "place"],
                                 },
                             },
                             evening: {
@@ -99,17 +111,23 @@ export const batch3Schema = {
                                     properties: {
                                         itineraryItem: { type: "string", description: "About the itinerary item" },
                                         briefDescription: { type: "string", description: "Elaborate about the place suggested" },
-                                        placeName: { type: "string", description: "Name of the place" },
-                                        coordinates: { 
+                                        place: {
                                             type: "object",
                                             properties: {
-                                                lat: { type: "number", description: "Latitude of the place" },
-                                                lng: { type: "number", description: "Longitude of the place" }
+                                                name: { type: "string", description: "Name of the place" },
+                                                coordinates: {
+                                                    type: "object",
+                                                    properties: {
+                                                        lat: { type: "number", description: "Latitude of the place" },
+                                                        lng: { type: "number", description: "Longitude of the place" }
+                                                    },
+                                                    required: ["lat", "lng"]
+                                                }
                                             },
-                                            required: ["lat", "lng"]
+                                            required: ["name", "coordinates"]
                                         }
                                     },
-                                    required: ["itineraryItem", "briefDescription", "placeName", "coordinates"],
+                                    required: ["itineraryItem", "briefDescription", "place"],
                                 },
                             },
                         },

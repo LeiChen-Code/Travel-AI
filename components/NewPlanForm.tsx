@@ -120,7 +120,7 @@ const NewPlanForm = () => {
                     travelPlace: data.travelPlace,  // 行程地点
                     fromDate: range.from.getTime(),  // 转为时间戳
                     toDate: range.to.getTime(),
-                    noOfDays: differenceInDays(range.from, range.to).toString(),
+                    noOfDays: (differenceInDays(range.to, range.from)+1).toString(),  // ! 此处要多加一天
                     travelPersons: data.travelPersons,  // 同行人数
                     travelType,  // 旅行模式
                     budget: data.budget,  // 预算
@@ -132,7 +132,7 @@ const NewPlanForm = () => {
                 if (planId === null) {
                     console.log("Error received from server action");
                     toast({
-                        title: "创建行程出错",
+                        title: "无法获取 planId",
                         variant: 'destructive',
                     });
                 }
@@ -141,7 +141,7 @@ const NewPlanForm = () => {
                 await prepare2({planId: planId});
                 await prepare3({planId: planId});
 
-                redirect(`/plans/${planId}/plan?isNewPlan=true`);
+                redirect(`/plans/${planId}?isNewPlan=true`);
             });
 
             toast({
@@ -150,6 +150,7 @@ const NewPlanForm = () => {
 
             
         } catch (error) {
+            // ! 此处点击生成图像以后会报错，是为什么？但是能正常运行
             console.log(error);
             toast({
                 title: '创建行程出错',

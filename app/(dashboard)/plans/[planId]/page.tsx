@@ -5,9 +5,16 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable"
 import React from 'react'
-import MapContainer from '@/components/map/MapContainer';
+//import { MapProvider } from '@/contexts/MapContext';
 import { Chat } from '@/components/chat/chat';
 import Plan from '@/components/travelplan/plan';
+import dynamic from "next/dynamic";
+import { MapProvider } from "@/contexts/MapContext";
+// 动态导入
+const Map = dynamic(() => import('@/components/map/Map'), {
+  ssr: false, // 关闭服务端渲染
+});
+
 
 const PlanDetails = (
   {
@@ -27,48 +34,54 @@ const PlanDetails = (
       : false;
 
   return (
-    <div>
-      {/* 页面分为三部分 */}
-      <ResizablePanelGroup
-        direction="horizontal"
-        className='h-screen w-full'
-      >
-        {/* 左边 */}
-        <ResizablePanel defaultSize={50} minSize={20} className='h-screen border'>
-          <div className="h-full w-full overflow-auto flex items-center justify-center">
-            {/* 展示行程 */}
-            <Plan planId={planId} isNewPlan={isNewPlan}/>
-          </div>
-        </ResizablePanel>
+    // 使用 MapProvider 包裹 Plan 和 Map 组件，以便它们共享上下文
+    <MapProvider>
+      <div>
+        {/* 页面分为三部分 */}
+        <ResizablePanelGroup
+          direction="horizontal"
+          className='h-screen w-full'
+        >
+          {/* 左边 */}
+          <ResizablePanel defaultSize={50} minSize={20} className='h-screen border'>
+            <div className="h-full w-full overflow-auto flex items-center justify-center">
+              {/* 展示行程 */}
 
-        <ResizableHandle />
-
-        {/* 右边 */}
-        <ResizablePanel defaultSize={50} className='h-screen'>
-          <ResizablePanelGroup direction="vertical" >
-            {/* 右上：地图 */}
-            <ResizablePanel defaultSize={50} minSize={30} className='border'>
-              <div className="flex h-full items-center justify-center">
-                {/* 展示地图 */}
-                <MapContainer/>
-              </div>
-            </ResizablePanel>
-
-            <ResizableHandle />
-            {/* 右下：聊天框 */}
-            <ResizablePanel defaultSize={50} minSize={30} className='border'>
-              <div className="flex h-full items-center justify-center">
-                {/* 聊天组件 */}
-                <Chat />
-              </div>
-            </ResizablePanel>
-
-          </ResizablePanelGroup>
-        </ResizablePanel>
-
-      </ResizablePanelGroup>
-    </div>
+                <Plan planId={planId} isNewPlan={isNewPlan}/>
     
+            </div>
+          </ResizablePanel>
+
+          <ResizableHandle />
+
+          {/* 右边 */}
+          <ResizablePanel defaultSize={50} className='h-screen'>
+            <ResizablePanelGroup direction="vertical" >
+              {/* 右上：地图 */}
+              <ResizablePanel defaultSize={50} minSize={30} className='border'>
+                <div className="flex h-full items-center justify-center">
+                  {/* 展示地图 */}
+
+                  <Map/>
+
+                </div>
+              </ResizablePanel>
+
+              <ResizableHandle />
+              {/* 右下：聊天框 */}
+              <ResizablePanel defaultSize={50} minSize={30} className='border'>
+                <div className="flex h-full items-center justify-center">
+                  {/* 聊天组件 */}
+                  <Chat />
+                </div>
+              </ResizablePanel>
+
+            </ResizablePanelGroup>
+          </ResizablePanel>
+
+        </ResizablePanelGroup>
+      </div>
+    </MapProvider>    
   )
 }
 

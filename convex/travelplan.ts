@@ -115,7 +115,7 @@ export const createPlan = mutation({
         
         // newPlan 相当于 planId
         const newPlan = await ctx.db.insert("planDetails",{
-            userPrompt: `${args.noOfDays} days trip to ${args.travelPlace}`,  // 初始化 prompt
+            userPrompt: `去 ${args.travelPlace} 旅行 ${args.noOfDays} 天`,  // 初始化 prompt
             abouttheplace:"",
             packingchecklist: [],
             localfood: [],
@@ -123,7 +123,6 @@ export const createPlan = mutation({
             itinerary: [],
             isGeneratedUsingAI: args.isGeneratedUsingAI,
             contentGenerationState:{
-                imagination: state,
                 abouttheplace: state,
                 besttimetovisit: state,
                 itinerary: state,
@@ -477,7 +476,7 @@ export const updatePartOfPlan = mutation({
   handler: async (ctx, args) => {
     const userId = await validateUser(ctx);  // 获取用户 Id
     console.log(
-      `updatePartOfPlan called by ${useId} on planId : ${args.planId}`
+      `updatePartOfPlan called by ${userId} on planId : ${args.planId}`
     );
     await ctx.db.patch(args.planId, {
       [args.key]: args.data,

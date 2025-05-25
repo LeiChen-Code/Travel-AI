@@ -14,22 +14,22 @@ const openai = new OpenAI(
 );
 
 const promptSuffix = `根据提供的模式(schema)以 JSON 格式生成旅行数据，
-                     响应内容中除了大括号内的内容外，不要返回任何其他内容。
+                     响应内容中除了大括号内的内容外，不要返回任何其他内容，且都是中文。
                      生成旅行计划时，给定的日期、旅行模式(travelType)和同行人数(travelPersons)可能会产生约 50% 的影响。`;
 
 // 大模型接口
 const callOpenAIApi = (prompt: string, schema: any, description: string) => {
   
-  // 将 schema 整合到 prompt 中
-  const fullPrompt = `Schema: ${JSON.stringify(schema)}\nDescription: ${description}\n${prompt}`;
+  // // 将 schema 整合到 prompt 中
+  // const fullPrompt = `Schema: ${JSON.stringify(schema)}\nDescription: ${description}\n${prompt}`;
   // 打印日志
-  console.log({ fullPrompt, schema });
+  console.log({ prompt, schema });
 
   const completion = openai.chat.completions.create({
     model: "qwen-plus",  // 调用通义千问
     messages: [
       { role: "system", content: "You are a helpful travel assistant." },
-      { role: "user", content: fullPrompt },
+      { role: "user", content: prompt },
     ],
     tools: [{  type: "function", function: { name: "set_travel_details", parameters: schema, description:description } }],
     tool_choice: { type: "function", function: { name: "set_travel_details" } },
@@ -66,10 +66,10 @@ export const generatebatch2 = (inputParams: OpenAIInputType) => {
   const description = `根据以下模式生成一次旅行的推荐描述：
   
   - 当地美食推荐：
-    - 一个提供旅行期间尝试当地美食建议的数组。
+    - 一个数组，每个元素是旅行期间关于旅行目的地的美食。
   
   - 旅行打包清单：
-    - 一个旅行打包清单中应包含物品的数组。
+    - 一个旅行打包清单数组，每个元素是关于旅行目的地需要携带的物品，需要结合旅行目的地推荐物品。
   
   确保函数响应符合提供的模式，并采用 JSON 格式。响应内容不应包含模式定义之外的任何内容。`;
   return callOpenAIApi(getPropmpt(inputParams), batch2Schema, description);
