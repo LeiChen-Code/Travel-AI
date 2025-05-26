@@ -13,7 +13,7 @@ export const batch1Schema = {
         },
 
     },
-    "required": [
+    required: [
         "abouttheplace",
         "besttimetovisit"
     ],
@@ -33,7 +33,7 @@ export const batch2Schema = {
             items: { type: "string" },
         },
     },
-    "required": [
+    required: [
         "localfood",
         "packingchecklist"
     ],
@@ -69,10 +69,10 @@ export const batch3Schema = {
                                                         lat: { type: "number", description: "Latitude of the place" },
                                                         lng: { type: "number", description: "Longitude of the place" }
                                                     },
-                                                    required: ["lat", "lng"]
+                                                    required: ["lat", "lng"],
                                                 }
                                             },
-                                            required: ["name", "coordinates"]
+                                            required: ["name", "coordinates"],
                                         }
                                     },
                                     required: ["itineraryItem", "briefDescription", "place"],
@@ -95,10 +95,10 @@ export const batch3Schema = {
                                                         lat: { type: "number", description: "Latitude of the place" },
                                                         lng: { type: "number", description: "Longitude of the place" }
                                                     },
-                                                    required: ["lat", "lng"]
-                                                }
+                                                    required: ["lat", "lng"],
+                                                },
                                             },
-                                            required: ["name", "coordinates"]
+                                            required: ["name", "coordinates"],
                                         }
                                     },
                                     required: ["itineraryItem", "briefDescription", "place"],
@@ -121,15 +121,15 @@ export const batch3Schema = {
                                                         lat: { type: "number", description: "Latitude of the place" },
                                                         lng: { type: "number", description: "Longitude of the place" }
                                                     },
-                                                    required: ["lat", "lng"]
-                                                }
+                                                    required: ["lat", "lng"],
+                                                },
                                             },
-                                            required: ["name", "coordinates"]
+                                            required: ["name", "coordinates"],
                                         }
                                     },
                                     required: ["itineraryItem", "briefDescription", "place"],
                                 },
-                            },
+                            }
                         },
                         required: ["morning", "afternoon", "evening"],
                     },
@@ -138,7 +138,7 @@ export const batch3Schema = {
             },
         },
     },
-    "required": [
+    required: [
         "itinerary",
     ],
 };

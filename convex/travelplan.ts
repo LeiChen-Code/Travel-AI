@@ -14,7 +14,7 @@ import { Doc, Id } from "./_generated/dataModel";
 import { useId } from "react";
 import { internal } from "./_generated/api";
 import { generatebatch1, generatebatch2, generatebatch3 } from "@/lib/openai";
-
+import { jsonrepair } from "jsonrepair";
 
 // 判断用户是否是该行程的管理者
 export const PlanAdmin = query({
@@ -655,17 +655,27 @@ export const prepareBatch3 = action({
             toDate,
         });
 
+        // 打印日志
+        console.log("大模型返回结果：", JSON.stringify(completion, null, 2));
+
         const nameMsg = completion?.choices[0]?.message?.tool_calls?.[0].function?.arguments as string;
 
-        const modelName = JSON.parse(nameMsg) as Pick<
-            Doc<"planDetails">,
-            "itinerary"
-        >;
+        try {
+          const fixedMsg = jsonrepair(nameMsg); // 修复 JSON 格式错误
+          const modelName = JSON.parse(fixedMsg) as {
+            itinerary: Doc<"planDetails">["itinerary"];
+          };
+          console.log("大模型返回的天数：", modelName.itinerary.length)
+          await ctx.runMutation(internal.travelplan.update_Itinerary, {
+              itinerary: modelName.itinerary,
+              planId: emptyPlan._id,
+          });
+        } catch (error) {
+          console.error("JSON解析失败,可能模型返回了非法JSON");
+          console.error("nameMsg内容:", nameMsg);
+          throw new ConvexError(`Invalid JSON from model. Message: ${error}`);
+        }
 
-        await ctx.runMutation(internal.travelplan.update_Itinerary, {
-            itinerary: modelName.itinerary,
-            planId: emptyPlan._id,
-        });
 
     } catch (error) {
         throw new ConvexError(

@@ -49,7 +49,7 @@ const Map = () => {
                 markersRef.current = markers;
 
                 if (selectedLocation && mapInstance.current) {
-                    mapInstance.current.setZoomAndCenter(18, selectedLocation.position);
+                    mapInstance.current.setZoomAndCenter(16, selectedLocation.position);
                 }
             }
         })
