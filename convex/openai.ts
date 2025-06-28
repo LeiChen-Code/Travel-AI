@@ -9,56 +9,6 @@ const openai = new OpenAI(
     }
 );
 
-export const generateText = action({
-    args: {
-      messages: v.array(
-        v.object({
-          content: v.string(),
-          role: v.union(v.literal("system"), v.literal("user"), v.literal("assistant")),
-        })
-      ),
-    },
-    handler: async (ctx, args) => {
-        
-      try {
-        const completion = await openai.chat.completions.create({
-            model: "qwen-plus",  //可按需更换模型名称。
-            messages: args.messages,
-            stream: true,  // 流式输出
-        });
-
-        return completion;
-
-        // 流式输出
-        // const chunks: Uint8Array[] = [];
-        
-        // for await (const chunk of completion) {
-        //     // console.log(JSON.stringify(chunk));
-        //     chunks.push(new TextEncoder().encode(JSON.stringify(chunk)));
-        // }
-        
-        // const buffer = new Uint8Array(chunks.reduce((acc, chunk) => acc + chunk.length, 0));
-        // let offset = 0;
-        // for (const chunk of chunks) {
-        //     buffer.set(chunk, offset);
-        //     offset += chunk.length;
-        // }
-        
-        // return buffer;
-      } catch (error) {
-        // 打印错误日记
-        console.error("OpenAI API error:", error);
-        throw new Error(`Failed to get a response from OpenAI: ${error}`);
-      }
-
-    },
-})
-
-// console.log("思考过程：")
-// console.log(completion.choices[0].message.reasoning_content)
-// console.log("最终答案：")
-// console.log(completion.choices[0].message.content)
-
 
 // 封装函数：等待某个异步任务完成
 async function pollUntilComplete(taskId: string, apiKey: string, maxAttempts = 10, intervalMs = 3000) {
@@ -145,3 +95,52 @@ export const generateImage = action({
   },
 });
 
+// 图像生成文本功能
+export const imageGenerateText = action({
+  args: {
+    base64URL: v.string(),
+    style: v.string(),
+  }, handler: async(ctx, args) => {
+    try {
+
+      if (!args.base64URL || !args.style) throw new Error("图像必须上传，且必须选择某一个社交平台风格");
+
+      // 生成图像的提示词
+      let prompt = `请你理解这张图片，生成图片描述，并根据“${args.style}”社交平台的风格，结合图片描述，生成一段符合该平台用户口味的旅行文案。`;
+
+      const completion = await openai.chat.completions.create({
+          model: "qwen-omni-turbo",  //只有该模型可以读取 base64 格式的图像
+          // type 定义传入类型
+          messages: [
+            {
+              role: "user",
+              content: [
+                { type: "image_url", image_url:{"url": args.base64URL}}, 
+                { type: "text", text: prompt },
+              ]
+            }
+          ],
+          stream: true,
+          modalities: ["text"],  // 输出文本
+      });
+
+      // 拼接流式返回结果
+      let finalText = "";
+      for await (const chunk of completion) {
+        const delta = chunk.choices?.[0]?.delta?.content;
+        if (delta) finalText += delta;
+      }
+
+      console.log("文案：",finalText);
+
+      return { text: finalText };  // 返回结果
+
+    } catch (error) {
+      // 打印错误日记
+      console.error("图片生成文案失败:", error);
+      throw new Error(`生成文案出错: ${error}`);
+    }
+  }
+})
+
+// 文本生成音频功能

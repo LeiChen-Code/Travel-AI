@@ -22,24 +22,28 @@ body {
 
 /* Tailwind Layer：自定义类 */
 @layer utilities {
+  /* 文本输入框样式 */
   .input-class {
-    @apply text-16 placeholder:text-16 bg-white-1 border border-gray-300 rounded-[6px] placeholder:text-gray-400 text-gray-800;
+    @apply text-16 placeholder:text-gray-1 bg-white-1 border rounded-[6px] ;
   }
 
   .travel_grid {
     @apply grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4;
   }
 
+  /* 左侧导航栏样式 */
   .left_sidebar {
     @apply sticky left-0 top-0 flex w-fit min-h-screen flex-col justify-between border-none bg-white-2 pt-8 text-gray-900 max-md:hidden lg:w-[270px] lg:pl-8;
   }
 
+  /* 创建行程时生成封面样式 */
   .generate_thumbnail {
-    @apply mt-[30px] flex gap-4 w-full flex-col justify-between rounded-lg border border-gray-200 bg-white-1 px-2.5 py-2 md:flex-row;
+    @apply mt-2 flex gap-4 w-full flex-col justify-between rounded-lg border border-gray-200 bg-white-1 px-2.5 py-2 md:flex-row;
   }
 
+  /* 上传图像样式 */
   .image_div {
-    @apply flex-center mt-5 h-[142px] w-full cursor-pointer flex-col gap-3 rounded-lg border-[2px] border-dashed border-gray-300 bg-white-1;
+    @apply flex-center h-[142px] w-full cursor-pointer flex-col gap-3 rounded-lg border-[2px] border-dashed border-gray-300 bg-white-1;
   }
 
   .carousel_box {
@@ -184,4 +188,39 @@ body {
   opacity: 0.8;
   background: linear-gradient(90deg, #60a5fa 0%, #3b82f6 100%);
   transition: left 0.1s ease;
+}
+
+/* ======= 文案生成页面样式 ======== */
+.generate-text-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.left-section {
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
+}
+
+.upload-tip {
+  margin-top: 8px;
+  color: #999;
+}
+
+.right-section {
+  width: 60%;
+  background:#FAFAFA;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+.generate-text-area,
+.generate-audio-area {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 20px;
 }

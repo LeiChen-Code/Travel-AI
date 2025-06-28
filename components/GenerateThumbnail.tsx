@@ -135,7 +135,7 @@ const GenerateThumbnail = ({
           </div>
         </div>
       ) : (
-        <div className='image_div' onClick={() => imageRef?.current?.click()}>
+        <div className='image_div mt-5' onClick={() => imageRef?.current?.click()}>
             <Input
               type="file"
               className='hidden'
