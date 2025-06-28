@@ -1,6 +1,7 @@
+"use client";
 import React from 'react'
 import Link from 'next/link'
-import { UserButton } from '@clerk/clerk-react'
+import { UserButton } from "@clerk/nextjs";
 
 // 顶部栏
 const Header = () => {
@@ -10,7 +11,7 @@ const Header = () => {
         <img src="/icons/logo.svg" alt="智行派 Logo" className="h-8 w-8" />
         <span className="text-xl font-semibold">智行派</span>
       </Link>
-      
+      <UserButton />
     </header>
   )
 }

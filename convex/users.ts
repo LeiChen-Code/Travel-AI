@@ -7,8 +7,7 @@ export const createUser = internalMutation({
         clerkId: v.string(),
         email: v.string(),
         imageUrl: v.string(),
-        firstName: v.optional(v.string()),
-        lastName: v.optional(v.string()),
+        userName: v.optional(v.string()),
     }, handler: async(ctx, args) => {
         try{
             // 第一个参数是表格，第二个参数传入内容
@@ -16,8 +15,7 @@ export const createUser = internalMutation({
               clerkId: args.clerkId,
               email: args.email,
               imageUrl: args.imageUrl,
-              firstName: args.firstName,
-              lastName: args.lastName,
+              userName: args.userName,
           })
           console.log(`User record created successfully: ${args.email}`);
         } catch(error){
@@ -34,8 +32,7 @@ export const updateUser = internalMutation({
         clerkId: v.string(),
         imageUrl: v.string(),
         email: v.string(),
-        firstName: v.optional(v.string()),
-        lastName: v.optional(v.string()),
+        userName: v.optional(v.string()),
     },
     async handler(ctx, args) {
       const user = await ctx.db
@@ -50,8 +47,7 @@ export const updateUser = internalMutation({
       await ctx.db.patch(user._id, {
         imageUrl: args.imageUrl,
         email: args.email,
-        firstName: args.firstName,
-        lastName: args.lastName
+        userName: args.userName,
       });
     },
 });

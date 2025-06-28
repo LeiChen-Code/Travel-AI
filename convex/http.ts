@@ -27,8 +27,7 @@ const handleClerkWebhook = httpAction(async (ctx, request) => {
                 clerkId: event.data.id,
                 email: event.data.email_addresses[0].email_address,
                 imageUrl: event.data.image_url,
-                firstName: event.data?.first_name ?? "",  // event.data.first_name 可能为空，因为要设置一个默认值""
-                lastName: event.data?.last_name ?? "",
+                userName: event.data?.username ?? "",  // event.data.username 可能为空，因为要设置一个默认值""
             });
             break;
         case "user.updated":
@@ -36,8 +35,7 @@ const handleClerkWebhook = httpAction(async (ctx, request) => {
                 clerkId: event.data.id,
                 imageUrl: event.data.image_url,
                 email: event.data.email_addresses[0].email_address,
-                firstName: event.data?.first_name ?? "", 
-                lastName: event.data?.last_name ?? "",
+                userName: event.data?.username ?? "", 
             });
             break;
         case "user.deleted":

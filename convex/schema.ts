@@ -70,8 +70,7 @@ export default defineSchema({
     users: defineTable({  // 用户表
         clerkId: v.string(),
         email: v.string(),
-        firstName: v.optional(v.string()),
-        lastName: v.optional(v.string()),
+        userName: v.optional(v.string()),
         imageUrl:v.string(),  // 用户头像
     })
     .index("by_user_id", ["clerkId"])

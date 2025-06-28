@@ -162,6 +162,19 @@ body {
 .cl-userButtonPopoverActionButtonIcon {
   color: #333;
 }
+.cl-internal-piyvrh,
+.cl-internal-13u79ez {
+  background: white;
+}
+.cl-internal-lk7758,
+.cl-internal-16vtwdp {
+  color: #268CFF;
+}
+/* 头像大小 */
+.cl-avatarBox {
+  width: 40px;
+  height: 40px;
+}
 
 .container{
   padding: 0px;

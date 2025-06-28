@@ -3,6 +3,7 @@ import { ClerkProvider, useAuth } from "@clerk/nextjs";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { ConvexReactClient } from "convex/react";
 import { ReactNode } from "react";
+import { zhCN } from '@clerk/localizations'
 
 // 一个 React 组件
 // 用于将 Clerk 和 Convex 的提供者（Provider）包装在一起，为子组件提供身份验证和状态管理的功能。
@@ -24,12 +25,17 @@ const ConvexClerkProvider = ({children}: {children: ReactNode}) => (
     },
     variables:{ // variables 用于设置颜色等样式
       colorBackground: "white",
-      colorPrimary: "",
+      colorPrimary: "blue",
       colorText: "black",
       colorInputBackground: "white",
       colorInputText: "black",
+      fontFamily: "var(--font-noto-sans-sc), sans-serif",
+      fontSize: "0.9rem",
     }
-  }}>
+  }}
+  afterSignOutUrl="/"  // 定义用户退出登录后跳转到的路径
+  localization={zhCN}
+  >
     <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
       {children}
     </ConvexProviderWithClerk>
