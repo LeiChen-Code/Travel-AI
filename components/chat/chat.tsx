@@ -5,6 +5,7 @@ import { KeyboardEvent, useRef, useEffect, useState } from "react";
 import { useConvexChat, ConvexChatProvider } from "@/components/chat/convex-chat-provider";
 import { Message } from "ai";
 
+// 定义整个聊天组件，包括对话区域和聊天输入框
 
 // Wrapper component that includes the provider
 export function Chat() {
@@ -26,13 +27,13 @@ function ChatInner() {
     isLoading,
     isClearing,
     convexMessages,
-  } = useConvexChat();
+  } = useConvexChat();  // 获取聊天上下文
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const chatContainerRef = useRef<HTMLDivElement>(null);
-  const [initialLoad, setInitialLoad] = useState(true);  // 是否为初次加载
+  const messagesEndRef = useRef<HTMLDivElement>(null);  // 指向消息列表底部的引用
+  const chatContainerRef = useRef<HTMLDivElement>(null);  // 指向整个聊天容器的引用
+  const [initialLoad, setInitialLoad] = useState(true);  // 是否为当前聊天页面的初次加载
 
-  // Convert Convex messages to AI Message format for ChatMessage component
+  // 将消息列表中的消息转换为适合 ChatMessage 组件渲染的标准格式
   const allMessages: Message[] = convexMessages
     .map((msg: any) => ({
       id: msg._id,
@@ -46,49 +47,54 @@ function ChatInner() {
           ? msg.role
           : "assistant",
       content: msg.text || msg.content || "",
-      createdAt: new Date(msg.createdAt || msg._creationTime),
+      createdAt: new Date(msg.createdAt || msg._creationTime),  // 统一时间戳为 Date 对象
       // Add parentId if it exists for threading
-      parentId: msg.parentId,
+      // parentId: msg.parentId,
     }))
-    .filter((msg: any) => msg.content.trim() !== "") // Filter out empty messages
-    .sort((a: any, b: any) => a.createdAt - b.createdAt);
+    .filter((msg: any) => msg.content.trim() !== "") // 过滤空消息
+    .sort((a: any, b: any) => a.createdAt - b.createdAt);  // 根据创建时间升序排序，确保消息展示顺序正确
 
   useEffect(() => {
+    // 消息列表变换时，输出调试信息
     console.log("Messages from Convex:", convexMessages);
     console.log("Processed messages for display:", allMessages);
   }, [convexMessages]);
 
-  // 每次消息变化时自动滚动到底部
+  // 每次有新消息时自动滚动到底部
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
-    // Skip auto-scrolling on initial page load
-    // 初次加载，并不自动滚动
+    // 初次加载，并不自动滚动到底部
     if (initialLoad) {
       setInitialLoad(false);
       return;
     }
 
-    // Only scroll on subsequent message changes
+    // 非初次加载时，只要消息列表非空，自动滚动到底部
     if (allMessages.length > 0) {
       scrollToBottom();
     }
   }, [allMessages, initialLoad]);
 
   useEffect(() => {
+    // 动态调整聊天容器的高度，以适应消息数量的变化
     if (chatContainerRef.current) {
+      // 每条消息预留 100 像素的高度，整体高度不会小于 100 像素，也不会超过窗口高度的 60%
       const height = Math.min(window.innerHeight * 0.6, Math.max(100, allMessages.length * 100));
       chatContainerRef.current.style.height = `${height}px`;
     }
   }, [allMessages]);
 
+  // 定义键盘响应事件
+  // 当用户按下 enter 键，触发消息的提交，而不是换行
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
+      // 判断输入内容去除空格后是否非空
       if (input.trim()) {
-        handleSubmit(e as any);
+        handleSubmit(e as any);  // 调用提交消息函数
       }
     }
   };
@@ -97,11 +103,12 @@ function ChatInner() {
   return (
     <div className={`w-full h-full flex flex-col items-center bg-[#FFFFFF]`}>
 
-      {/* 对话框 */}
+      {/* 消息展示区域 */}
       <div className="h-full flex-1 overflow-y-auto bg-white pl-4 pt-4">
         <div
           ref={chatContainerRef}
           className="w-full h-full pr-2 transition-all duration-300 ease-in-out">
+          {/* 遍历所有消息，每条消息渲染一个 chatMessage 组件 */}
           {allMessages.map((message) => (
             <ChatMessage
               key={message.id}
@@ -111,11 +118,10 @@ function ChatInner() {
           ))}
           <div ref={messagesEndRef} />
         </div>
-
       </div>
       
       <div className="w-full p-4 bg-gray-3 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
-        {/* 输入框 */}
+        {/* 聊天输入框 */}
         <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
           <div
             className="w-full bg-white cursor-text"
@@ -140,7 +146,7 @@ function ChatInner() {
           {/* 清空聊天按钮*/}
           <button
             onClick={handleClearChat}
-            disabled={isLoading || isClearing || convexMessages.length === 0}
+            disabled={isLoading || isClearing || convexMessages.length === 0}  // 当聊天正在加载或正在清空或没有消息时，按钮不响应
             className="px-3 py-1.5 rounded-lg bg-white-1 border border-gray-1 text-sm shadow-sm flex items-center gap-4 disabled:opacity-50 disabled:cursor-not-allowed">
             {isClearing ? (
               <>
@@ -191,9 +197,6 @@ function ChatInner() {
         
 
       </div>
-
-      
-      
 
     </div>
   );

@@ -12,7 +12,6 @@ export const createMessage = mutation({
     chatId: v.optional(v.string()),
     complete: v.optional(v.boolean()),
     parentId: v.optional(v.string()),
-    modelPreference: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const messageId = await ctx.db.insert("messages", {
@@ -23,9 +22,7 @@ export const createMessage = mutation({
       createdBy: args.createdBy,
       chatId: args.chatId,
       complete: args.complete,
-      parentId: args.parentId,
       createdAt: Date.now(),
-      modelPreference: args.modelPreference,
     });
     return messageId;
   },
@@ -57,18 +54,5 @@ export const listMessage = query({
 
     // Order by createdAt if available, otherwise by _creationTime
     return await finalQuery.order("asc").collect();
-  },
-});
-
-export const getThread = query({
-  args: {
-    messageId: v.string(),
-  },
-  handler: async (ctx, args) => {
-    return await ctx.db
-      .query("messages")
-      .withIndex("by_parent", (q) => q.eq("parentId", args.messageId))
-      .order("asc")
-      .collect();
   },
 });

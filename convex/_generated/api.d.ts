@@ -20,7 +20,6 @@ import type * as generateImage from "../generateImage.js";
 import type * as http from "../http.js";
 import type * as initChat from "../initChat.js";
 import type * as messages from "../messages.js";
-import type * as modelPreferences from "../modelPreferences.js";
 import type * as multiModelAI from "../multiModelAI.js";
 import type * as openai from "../openai.js";
 import type * as retrier from "../retrier.js";
@@ -44,7 +43,6 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   initChat: typeof initChat;
   messages: typeof messages;
-  modelPreferences: typeof modelPreferences;
   multiModelAI: typeof multiModelAI;
   openai: typeof openai;
   retrier: typeof retrier;

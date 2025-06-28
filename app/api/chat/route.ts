@@ -1,53 +1,55 @@
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
-import { VALID_MODELS, DEFAULT_MODEL } from "@/convex/modelPreferences";
 import { NextResponse } from "next/server";
 
-// Ensure the route handler is treated as dynamic
+// 处理聊天请求并与 Convex 后端进行交互
+
+// 动态方式处理请求
 export const dynamic = "force-dynamic";
 
-// Initialize Convex client
-const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL || "https://fortunate-dragon-78.convex.cloud";
+// 初始化 Convex 客户端，确保设置了环境变量
+const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL!;
 const client = new ConvexHttpClient(convexUrl);
 
 export async function POST(req: Request) {
   try {
-    const { messages, chatId, model } = await req.json();
+    // 接收请求对象，解析请求体中的字段：messages、chatId、model
+    const { messages, chatId } = await req.json();
 
-    // Ensure model is valid or use default
-    const selectedModel = VALID_MODELS.includes(model) ? model : DEFAULT_MODEL;
-
-    // Debug: Log the model being used and chat ID
-    console.log("Chat API using model:", selectedModel);
+    // 打印调试信息
     console.log("Number of messages:", messages.length);
     console.log("Chat ID:", chatId);
 
+    // 如果缺少 chatId，返回 400 错误
     if (!chatId) {
-      console.error("Missing chatId in request");
+      console.error("Missing chatId in request, 请求中缺少 chatId");
       return NextResponse.json({ error: "Missing chatId" }, { status: 400 });
     }
 
-    // Call the multiModelAI.chat action directly
-    // The action itself handles saving the response to the database
+    // 调用 convex 端的 chat 功能，将消息和 chatId 发送到后端
+    // 后端自动处理并保存响应到数据库
     await client.action(api.multiModelAI.chat, {
       messages,
       chatId,
     });
 
+    // 打印成功调用的信息
     console.log("Convex action api.multiModelAI.chat triggered successfully.");
 
-    // Return a simple success response
+    // 返回成功响应
     return NextResponse.json({ success: true });
+
   } catch (error: any) {
+    // 打印错误信息
     console.error("Error in /api/chat route:", error);
 
-    // Generate a more helpful error message
+    // 生成详细的错误信息
     let errorMessage = "Failed to process chat request.";
     if (error.message) {
       errorMessage += ` Error: ${error.message}`;
     }
 
-    // Return an error response
+    // 返回错误响应
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

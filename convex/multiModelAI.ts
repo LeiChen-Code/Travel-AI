@@ -3,7 +3,6 @@
 import { v } from "convex/values";
 import { action } from "./_generated/server";
 import OpenAI from "openai";
-import { VALID_MODELS } from "./modelPreferences";
 import { internal } from "./_generated/api";
 
 // System prompt for AI models

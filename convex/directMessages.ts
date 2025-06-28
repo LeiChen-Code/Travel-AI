@@ -22,7 +22,7 @@ export const saveAIResponse = internalMutation({
       content: args.content,
       complete: args.complete !== undefined ? args.complete : true,
       createdAt: Date.now(),
-      modelPreference: args.modelPreference,
+      // modelPreference: args.modelPreference,
     });
 
     console.log("AI response saved with ID:", messageId);
