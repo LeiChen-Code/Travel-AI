@@ -3,7 +3,7 @@ import { Input } from '@/components/ui/input'
 import { api } from '@/convex/_generated/api'
 import { Id } from '@/convex/_generated/dataModel'
 import { useToast } from '@/hooks/use-toast'
-import { useUploadFiles } from '@xixixao/uploadstuff/react'
+import { v4 as uuidv4 } from 'uuid'
 import { useAction, useMutation } from 'convex/react'
 import { Loader } from 'lucide-react'
 import Image from 'next/image'
@@ -24,7 +24,7 @@ import { Textarea } from '@/components/ui/textarea'
 // 不同社交平台风格
 const styleCategories = ['小红书', '朋友圈', '抖音'];
 // 不同音色
-const voiceCategories = ['x4_EnUs_Lindsay_assist', 'x4_enus_gavin_assist', 'x4_enus_ryan_assist', 'x4_enus_luna_assist', 'x4_enus_lucy_education'];
+const voiceCategories = ['longanrou', 'longqiang_v2', 'longhan_v2', 'longcheng_v2', 'longwan_v2'];
 
 const GenerateText = () => {
   
@@ -42,6 +42,7 @@ const GenerateText = () => {
   const [voiceType, setVoiceType] = useState<string | null>(null);  // 选择音色
   const [voicePrompt, setVoicePrompt] = useState('');  // 判断音频提示词是否输入
   const [voiceLoading, setVoiceLoading] = useState(false);  // 判断音频是否正在生成
+  const [audioURL, setAudioURL] = useState('');  // 设置音频的临时访问 URL
 
   // 上传图像
   const uploadImage = async(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -89,7 +90,6 @@ const GenerateText = () => {
   
   // 图生文
   const generateCaption = useAction(api.openai.imageGenerateText);
-
   const handleGenerateText = async () => {
     if (!base64URL || !styleType) return;  // 保证图像已上传且文案风格已选择
     setTextLoading(true);  // 启动生成
@@ -104,14 +104,76 @@ const GenerateText = () => {
     }
   };
 
+  // 文本转语音
+  const generateVoice = async() => {
+    setVoiceLoading(true);
+    setAudioURL("");
+
+    if (!voiceType) {
+      toast({ title: "请先选择音色！" });
+      return setVoiceLoading(false);
+    }
+
+    if(!voicePrompt){
+        // 弹窗提示错误消息
+        toast({
+          title: "请提供生成音频的提示词，否则无法生成音频！",
+        })
+        return setVoiceLoading(false);
+    }
+    try {
+
+      // 分割提示词文本为数组
+      const texts = voicePrompt.split(/[，,。？！\n]/).filter(Boolean);
+
+      // 调用 cosyvoice 模型实现文本转语音
+      const response = await fetch("/api/CosyVoice", {
+        method: "POST",
+        body: JSON.stringify({ texts: texts, voiceType: voiceType }),
+        headers: { "Content-Type": "application/json" },
+      }); 
+      const arrayBuffer = await response.arrayBuffer();
+      const blob = new Blob([arrayBuffer], { type: 'audio/mpeg' });
+      const fileName = `tts-${uuidv4()}.mp3`;  // 文件名
+      const file = new File([blob], fileName, { type: 'audio/mpeg' });  // 生成 mp3 文件
+
+      // 设置音频临时访问 url
+      const tmpUrl = URL.createObjectURL(file); 
+      setAudioURL(tmpUrl);
+
+      setVoiceLoading(false);  // 已经生成音频
+      // 弹窗显示成功信息
+      toast({
+          title: "音频生成成功",
+      })
+    } catch (error) {
+      // 打印报错
+      console.log('文本转语音出错', error);
+      // 弹窗报错
+      toast({
+          title: "生成音频出错",
+          variant: "destructive",
+      })
+      setVoiceLoading(false);
+    }
+
+    return {
+        voiceLoading, generateVoice
+    }
+
+  }
+
   // 清理之前的临时 URL
   useEffect(() => {
     return () => {
       if (imageURL) {
         URL.revokeObjectURL(imageURL);
       }
+      if (audioURL) {
+        URL.revokeObjectURL(audioURL);
+      }
     };
-  }, [imageURL]);
+  }, [imageURL, audioURL]);
 
 
   return (
@@ -227,14 +289,14 @@ const GenerateText = () => {
               </SelectContent>
 
               {/* 选择音色以后自动播放音频 */}
-              {/* {voiceType && (
-                <audio src={`/${voiceType}.mp3`} autoPlay className="hidden"/>
-              )} */}
+              {voiceType && (
+                <audio src={`/audios/${voiceType}.mp3`} autoPlay className="hidden"/>
+              )}
 
             </Select>
 
             {/* 生成音频按钮 */}
-            <Button disabled={voiceLoading || !base64URL} onClick={handleGenerateText} className="bg-blue-500 hover:bg-blue-700 text-white-1 font-medium py-2 px-16 rounded">
+            <Button disabled={voiceLoading || !voicePrompt} onClick={generateVoice} className="bg-blue-500 hover:bg-blue-700 text-white-1 font-medium py-2 px-16 rounded">
               {voiceLoading ? "生成中..." : "生成音频"}
             </Button>   
           </div>
@@ -248,6 +310,12 @@ const GenerateText = () => {
             onChange={(e) => setVoicePrompt(e.target.value)}  // 输入文本到提示词变量
           />
           
+          {/* 播放音频 */}
+          {audioURL && (
+            <audio controls src={audioURL} className="w-full mt-4">
+              Your browser does not support the audio element.
+            </audio>
+          )}
           
         </div>
 
