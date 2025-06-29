@@ -13,7 +13,7 @@ const client = new ConvexHttpClient(convexUrl);
 
 export async function POST(req: Request) {
   try {
-    // 接收请求对象，解析请求体中的字段：messages、chatId、model
+    // 接收请求对象，解析请求体中的字段：messages、chatId
     const { messages, chatId } = await req.json();
 
     // 打印调试信息
@@ -28,13 +28,13 @@ export async function POST(req: Request) {
 
     // 调用 convex 端的 chat 功能，将消息和 chatId 发送到后端
     // 后端自动处理并保存响应到数据库
-    await client.action(api.multiModelAI.chat, {
+    await client.action(api.chatAI.chat, {
       messages,
       chatId,
     });
 
     // 打印成功调用的信息
-    console.log("Convex action api.multiModelAI.chat triggered successfully.");
+    console.log("Convex action api.chatAI.chat triggered successfully.");
 
     // 返回成功响应
     return NextResponse.json({ success: true });

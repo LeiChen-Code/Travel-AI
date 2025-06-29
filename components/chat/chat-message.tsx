@@ -9,7 +9,7 @@ import remarkGfm from 'remark-gfm'
 
 export function ChatMessage({
   message, // 当前要渲染的消息
-  messages,  // 同一会话下的所有消息数组
+  messages,  // 同一会话下的所有消息列表
   ...props
 }: {
   message: Message;
@@ -17,11 +17,7 @@ export function ChatMessage({
 }) {
 
   return (
-    <div
-      // 根据消息是否为 AI 回复 动态调整样式
-      className={cn(
-        "group relative flex items-start px-4 py-2"
-      )}
+    <div className= "group relative flex items-start px-4 py-2"
       {...props}
     >
 
@@ -38,8 +34,8 @@ export function ChatMessage({
             {/* 将消息内容渲染为 markdown 格式 */}
             <ReactMarkdown 
               remarkPlugins={[remarkGfm]}
-              className="prosemal max-w-none break-words prose-p:leading-relaxed prose-pre:p-0 
-              prose-headings:font-normal prose-strong:font-nor">
+              className="prose max-w-none break-words prose-p:leading-relaxed prose-pre:p-0 
+              prose-headings:font-normal prose-strong:font-nor"> 
               {message.content}
             </ReactMarkdown>
             

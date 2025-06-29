@@ -102,8 +102,7 @@ export default defineSchema({
         userId: v.optional(v.string()),  // 用户 ID
         createdBy: v.optional(v.string()),  // 创建者??
         chatId: v.optional(v.string()),  // 所属聊天会话 ID
-        complete: v.optional(v.boolean()),  // 标记该聊天消息是否完成
-        // parentId: v.optional(v.string()),  // 父消息 ID，即上一条消息 ID
+        complete: v.optional(v.boolean()),  // 标记该聊天消息是否是乐观消息？
     })
     .index("by_created_at", ["createdAt"])
     .index("by_user", ["userId"])
@@ -111,18 +110,15 @@ export default defineSchema({
 
     // 历史消息表，便于后续检索和数据管理，存储低频访问的归档数据，避免主表膨胀
     chat_history: defineTable({
-        // Fields copied from the original message
         originalMessageId: v.id("messages"), // 引用原始消息 ID，便于追溯
-        content: v.optional(v.string()),
+        content: v.optional(v.string()),  // 消息内容
         text: v.optional(v.string()),
-        role: v.string(),
+        role: v.string(),  // 消息角色
         originalCreatedAt: v.optional(v.number()), // 原始消息的创建时间
         userId: v.optional(v.string()),
         createdBy: v.optional(v.string()),
         chatId: v.optional(v.string()),
-        // parentId: v.optional(v.string()),
-        // modelPreference: v.optional(v.string()),
-        // Archiving specific fields
+        // 归档相关字段
         archiveSessionId: v.string(), // 标记同一次归档操作的所有消息，用于批量管理
         archivedAt: v.number(), // 归档的时间戳
     }).index("by_archive_session", ["archiveSessionId"]),

@@ -70,7 +70,7 @@ export function ConvexChatProvider({ children }: { children: ReactNode }) {
   
   // 从 convex API 获取创建消息接口
   const createMessage = useMutation(api.messages.createMessage);
-  const archiveChatMutation = useMutation(api.chat.archiveChat); // 归档聊天接口
+  const archiveChatMutation = useMutation(api.messages.archiveChat); // 归档聊天接口
 
   // 表单提交的处理函数，override
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
