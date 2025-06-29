@@ -2,7 +2,7 @@
 import {useState} from "react";
 
 import {Button} from "@/components/ui/button";
-import {Dialog, DialogContent, DialogTrigger} from "@/components/ui/dialog";
+import {Dialog, DialogContent, DialogTrigger, DialogOverlay} from "@/components/ui/dialog";
 import {PlusCircleIcon} from "lucide-react";
 
 import ItineraryDayForm from "@/components/addNewItineraryDay/ItineraryDayForm";
@@ -24,7 +24,8 @@ export function AddIternaryDay({planId}: {planId: string}) {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="bg-white-1 sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] bg-white-1">
+        
         <ItineraryDayForm planId={planId} setOpen={setOpen} />
       </DialogContent>
       

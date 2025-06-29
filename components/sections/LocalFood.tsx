@@ -13,11 +13,12 @@ import {useState} from "react";
 
 
 export default function LocalFoodRecommendations({
-  recommendations,
+  recommendations,  // 食物列表
   isLoading,
   planId,
   allowEdit,
 }: LocalFoodProps) {
+  // 设置编辑状态
   const [editMode, setEditMode] = useState(false);
 
   const updateLocalFood = useMutation(api.travelplan.updatePartOfPlan);
@@ -26,13 +27,14 @@ export default function LocalFoodRecommendations({
     setEditMode(!editMode);
   };
 
+  // 更新食物推荐表单
   const updateLocalFoodContent = (updatedArray: string[]) => {
     updateLocalFood({
       planId: planId as Id<"planDetails">,
       data: updatedArray,
       key: "localfood",
     }).then(() => {
-      handleToggleEditMode();
+      handleToggleEditMode();  // 更新完后切换编辑状态
     });
   };
 
@@ -50,12 +52,14 @@ export default function LocalFoodRecommendations({
       {!isLoading && recommendations ? (
         <div className="ml-8">
           {editMode ? (
+            // 编辑表单
             <EditList
               arrayData={recommendations}
               handleToggleEditMode={handleToggleEditMode}
               updateData={updateLocalFoodContent}
             />
           ) : (
+            // 传入食物列表
             <List list={recommendations} />
           )}
         </div>

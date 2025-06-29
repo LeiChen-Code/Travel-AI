@@ -144,9 +144,9 @@ const NewPlanForm = () => {
                 redirect(`/plans/${planId}?isNewPlan=true`);
             });
 
-            toast({
-                title:"行程创建成功！"
-            })
+            // toast({
+            //     title:"行程创建成功！"
+            // })
 
             
         } catch (error) {

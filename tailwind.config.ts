@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import colors from 'tailwindcss/colors';
 
 const config = {
     darkMode: ["class"],
@@ -23,6 +24,7 @@ const config = {
   		colors: {
 			// 修改样式
 			black:{
+				DEFAULT: '#000000',
 				1:'#000000',
 				2:'#232323',
 				3:'#71788B',
@@ -34,6 +36,7 @@ const config = {
 				4:'#5E5E5E',
 			},
 			white:{
+				DEFAULT: '#FFFFFF',
 				1:'#FFFFFF',
 				2:'#FAFAFA'
 			},

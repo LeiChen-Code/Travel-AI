@@ -3,6 +3,7 @@ import { TimelineProps } from "@/types";
 import { Sun, Sunrise, Sunset, TrashIcon } from "lucide-react";
 import { ReactNode } from "react";
 import { useMapContext } from "@/contexts/MapContext";
+import Image from "next/image";
 
 // 此组件定义行程时间表
 const Timeline = ({itinerary, planId, allowEdit}: TimelineProps) => {
@@ -13,19 +14,23 @@ const Timeline = ({itinerary, planId, allowEdit}: TimelineProps) => {
         点击 + 创建一天的行程
       </div>
     );
-    // 过滤掉早上、下午和晚上都没有活动的日期
-    const filteredItinerary = itinerary?.filter((day) => {
-      const isMorningEmpty = day.activities.morning.length === 0;
-      const isAfternoonEmpty = day.activities.afternoon.length === 0;
-      const isEveningEmpty = day.activities.evening.length === 0;
 
-      return !(isMorningEmpty && isAfternoonEmpty && isEveningEmpty);
-    });
+  // 过滤掉早上、下午和晚上都没有活动的日期
+  const filteredItinerary = itinerary?.filter((day) => {
+    const isMorningEmpty = day.activities.morning.length === 0;
+    const isAfternoonEmpty = day.activities.afternoon.length === 0;
+    const isEveningEmpty = day.activities.evening.length === 0;
+
+    return !(isMorningEmpty && isAfternoonEmpty && isEveningEmpty);
+  });
 
   return (
-    <ol className="relative border-s border-gray-200 dark:border-foreground/40 ml-10 mt-5">
+    // ol 为有序列表 ordered list，自动为列表项添加编号
+    <ol className="relative border-s border-gray-200 ml-5 mt-5">
       {filteredItinerary?.map((day) => (
+        // li 表示列表项 list item，定义列表中的每一项，每一天用一个 li 表示
         <li className="mb-10 ms-6" key={day.title}>
+          {/* 渲染日历图标 */}
           <span className="absolute flex items-center justify-center w-6 h-6 bg-white-1 rounded-full -start-3 ring-1 ring-white ring-gray-1">
             <svg
               className="w-2.5 h-2.5 text-gray-4 "
@@ -41,7 +46,7 @@ const Timeline = ({itinerary, planId, allowEdit}: TimelineProps) => {
           {/* 一天的标题 */}
           <ItineraryDayHeader planId={planId} title={day.title} allowEdit={allowEdit} />
           {/* 具体活动 */}
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-3">
             <Activity
               activity={day.activities.morning}
               heading="早上"
@@ -86,36 +91,47 @@ const Activity = ({
   
   if (activity.length == 0) return null;
   return (
-    <div className="flex flex-col gap-2 shadow-md p-2 bg-muted rounded-sm">
+    <div className="flex flex-col gap-2 border-b border-gray-200">
       {/* 标题：早上/下午/晚上 */}
       <h3
-        className="text-sm leading-none
-                  text-gray-600  w-max p-2 font-semibold
+        className="text-base mt-2 w-max p-2 font-semibold
                   flex justify-center gap-2 items-center capitalize"
       >
         {icon}
         <div className="text-foreground">{heading}</div>
       </h3>
 
-      {/* 活动标题和活动描述 */}
+      {/* 活动标题和活动描述，ul 是无序列表 unordered list，ul 展示某个时间段的活动 */}
       <ul className="space-y-1 text-muted-foreground pl-2">
         {activity.map((act, index) => (
+          // 每个活动用 li 表示
           <li key={index}>
             <div className="w-full p-1 text-base overflow-hidden">
-              <span className=" text-foreground font-medium">{act.itineraryItem}</span>
-              {/* 地点信息 */}
-              {act.place && (
-                <div className="text-sm text-blue-700 ml-2">
-                  {/* 设置点击事件 */}
-                  <span className="cursor-pointer" onClick={() => setSelectedLocation({
-                      name: act.place.name,
-                      position: [act.place.coordinates.lng, act.place.coordinates.lat],
-                    })}>
-                    地点：{act.place.name}
-                  </span>
-                </div>
-              )}
-              <p className="max-w-md md:max-w-full text-wrap whitespace-pre-line">
+              <div className="flex gap-2 p-2 items-center">
+                {/* 活动标题 */}
+                <span className="flex text-foreground font-medium">{act.itineraryItem}</span>
+                {/* 地点信息 */}
+                {act.place && (
+                  <div className="flex gap-2 text-sm bg-slate-100 text-black-1 p-2 rounded-md hover:text-blue-1">
+                    {/* 设置点击地点事件 */}
+                    <Image
+                      src="/icons/map-pin.svg"
+                      alt=""
+                      width={18}
+                      height={18}
+                    />
+                    <span className="cursor-pointer" onClick={() => setSelectedLocation({
+                        name: act.place.name,
+                        position: [act.place.coordinates.lng, act.place.coordinates.lat],
+                      })}>
+                      {act.place.name}
+                    </span>
+                  </div>
+                )}
+              </div>
+              
+              {/* 活动描述 */}
+              <p className="max-w-md md:max-w-full text-wrap whitespace-pre-line p-2">
                 {act.briefDescription}
               </p>
             </div>

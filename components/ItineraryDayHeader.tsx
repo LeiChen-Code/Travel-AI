@@ -40,10 +40,10 @@ export default function ItineraryDayHeader({title, planId, allowEdit}: Itinerary
               asChild
               size="icon"
               variant="ghost"
-              className="w-7 h-7 p-1 rounded-full bg-background/50"
+              className="w-7 h-7 p-1 rounded-full "
               onClick={() => setOpen(true)}
             >
-              <TrashIcon className=" text-red-500 dark:text-foreground dark:hover:text-red-500 hover:scale-105 transition-all duration-300" />
+              <TrashIcon className=" text-red-500 hover:scale-105 transition-all duration-300" />
             </Button>
           </AlertDialogTrigger>
 
@@ -59,6 +59,7 @@ export default function ItineraryDayHeader({title, planId, allowEdit}: Itinerary
             <AlertDialogFooter>
               <AlertDialogCancel>取消</AlertDialogCancel>
               <AlertDialogAction
+                className="text-white-1"
                 onClick={() => deleteDayInItinerary({planId: planId as Id<"planDetails">, dayName: title})}
               >
                 删除

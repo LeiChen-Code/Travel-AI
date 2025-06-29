@@ -1,4 +1,5 @@
 "use client"
+import { DialogDemo } from '@/components/testdialog';
 import React from 'react'
 
 type Location = {
@@ -30,6 +31,7 @@ const CreatPlan = () => {
     <div>
       <h1 className='text-20 font-bold text-black-1'>地图示例</h1>
       {/* <Map locations={locations}/> */}
+      <DialogDemo/>
     </div>
   )
 }

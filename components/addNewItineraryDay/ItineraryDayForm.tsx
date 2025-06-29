@@ -52,7 +52,8 @@ const ItineraryDayForm = ({planId, setOpen}: ItineraryDayFormProps) => {
       data.itinerary.activities.evening.length === 0
     )
       return;
-
+    
+    // !报错，因为新增一天的时候，没有添加地点 
     updateItinerary({
       planId: planId as Id<"planDetails">,
       itineraryDay: data.itinerary,
@@ -60,8 +61,8 @@ const ItineraryDayForm = ({planId, setOpen}: ItineraryDayFormProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSaveEditList)} className="flex flex-col gap-1">
-      <h2 className="font-medium">新增一天</h2>
+    <form onSubmit={handleSubmit(onSaveEditList)} className="bg-white-1 flex flex-col gap-1">
+      <h2 className="bg-white-1 font-medium">新增一天</h2>
       <Tabs defaultValue="morning" className="" onValueChange={handleTabChange}>
 
         <TabsList>
