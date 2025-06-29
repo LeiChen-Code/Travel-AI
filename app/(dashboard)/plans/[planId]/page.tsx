@@ -72,7 +72,7 @@ const PlanDetails = (
               <ResizablePanel defaultSize={50} minSize={30} className='border'>
                 <div className="flex h-full items-center justify-center">
                   {/* 聊天组件 */}
-                  <Chat />
+                  <Chat planId={planId} isNewPlan={isNewPlan}/>
                 </div>
               </ResizablePanel>
 

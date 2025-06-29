@@ -1,11 +1,10 @@
 "use client";
 
 import React, { createContext, ReactNode, useContext, useEffect, useState } from "react";
-import { useChat as useAIChat, UseChatHelpers } from "ai/react";
+import { UseChatHelpers } from "ai/react";
 import { api } from "@/convex/_generated/api";
 import { useMutation, useQuery } from "convex/react";
 import { nanoid } from "nanoid";
-import { Message } from "ai";
 import { Id } from "@/convex/_generated/dataModel"; // Ensure Id type is imported if used in message types
 
 // 封装聊天相关的状态（输入内容、消息列表、loading 状态等）以及处理函数（提交消息、清空聊天等）
@@ -26,18 +25,19 @@ type ConvexChatContextType = {
 // 创建上下文类型
 const ConvexChatContext = createContext<ConvexChatContextType | null>(null);
 
-export function ConvexChatProvider({ children }: { children: ReactNode }) {
-  // 聊天 ID 初始化和本地存储持久化
-  const [chatId, setChatId] = useState<string>(() => {
-    // 判断当前环境是否为浏览器，只有浏览器环境下才能访问 localStorage
-    // 保证即使用户刷新页面或重新进入应用，chatId 也能保持一致
-    if (typeof window !== "undefined") {
-      // !先尝试从 localStorage 读取之前保存的 currentChatId，如果存在直接使用
-      const storedChatId = localStorage.getItem("currentChatId"); 
-      return storedChatId || `chat-${nanoid()}`;  // 如果之前不存在 chatId，则使用 nanoid() 生成一个新的唯一 ID
-    }
-    return `chat-${nanoid()}`;
-  });
+export function ConvexChatProvider(
+  { children, planId, isNewPlan }: 
+  { children: ReactNode; planId:string, isNewPlan:boolean }
+) {
+  
+  // 聊天 ID = 计划 ID
+  const chatId = planId;
+
+  // 如果是新创建的计划，添加欢迎消息到消息列表中
+  if (isNewPlan) {
+    const initChat = useMutation(api.initChat.setupInitialData);
+    initChat({chatId});
+  }
 
   useEffect(() => {
     // 每当 chatId 变化时，触发 useEffect，更新 chatId

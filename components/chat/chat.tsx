@@ -8,9 +8,10 @@ import { Message } from "ai";
 // 定义整个聊天组件，包括对话区域和聊天输入框
 
 // Wrapper component that includes the provider
-export function Chat() {
+export function Chat({ planId, isNewPlan }: { planId: string, isNewPlan:boolean }) {
   return (
-    <ConvexChatProvider>
+    // 传入 planId 作为 chatId
+    <ConvexChatProvider planId={planId} isNewPlan={isNewPlan}>
       <ChatInner />
     </ConvexChatProvider>
   );
@@ -108,12 +109,14 @@ function ChatInner() {
         <div
           ref={chatContainerRef}
           className="w-full h-full pr-2 transition-all duration-300 ease-in-out">
+          
           {/* 遍历所有消息，每条消息渲染一个 chatMessage 组件 */}
           {allMessages.map((message) => (
             <ChatMessage
               key={message.id}
               message={message as Message}
               messages={allMessages as Message[]}
+              isLoading={isLoading} 
             />
           ))}
           <div ref={messagesEndRef} />
