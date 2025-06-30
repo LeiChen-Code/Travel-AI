@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { DatePickerWithRange } from "@/components/DateRangePicker"
+import { DatePickerWithRange } from "@/components/create/DateRangePicker"
 import {
   Select,
   SelectContent,
@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
 import { useState, useTransition } from "react"
-import GenerateThumbnail from "@/components/GenerateThumbnail"
+import GenerateThumbnail from "@/components/create/GenerateThumbnail"
 import { Loader } from "lucide-react"
 import { Id } from "@/convex/_generated/dataModel"
 import { DateRange } from "react-day-picker"
@@ -70,10 +70,7 @@ const NewPlanForm = () => {
     
     // AI 生成状态
     const [pendingAIPlan, startTransactionAiPlan] = useTransition();
-    // 调用函数
-    const prepare1 = useAction(api.travelplan.prepareBatch1);
-    const prepare2 = useAction(api.travelplan.prepareBatch2);
-    const prepare3 = useAction(api.travelplan.prepareBatch3);
+    // 创建行程函数
     const createplan = useMutation(api.travelplan.createPlan);
     const { toast } = useToast();
     
@@ -113,8 +110,8 @@ const NewPlanForm = () => {
                     setIsSubmitting(false);
                     throw new Error("请选择完整的日期范围");
                 }
-                console.log("开始调用 AI");
-
+                
+                // 创建行程，返回 planId
                 const planId = await createplan({
                     planTitle: data.planTitle,  // 行程标题
                     travelPlace: data.travelPlace,  // 行程地点
@@ -135,12 +132,10 @@ const NewPlanForm = () => {
                         title: "无法获取 planId",
                         variant: 'destructive',
                     });
+                    setIsSubmitting(false);
+                    return;
                 }
-
-                await prepare1({planId: planId});
-                await prepare2({planId: planId});
-                await prepare3({planId: planId});
-
+                // 立即跳转
                 redirect(`/plans/${planId}?isNewPlan=true`);
             });
 

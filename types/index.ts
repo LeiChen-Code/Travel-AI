@@ -71,6 +71,7 @@ export interface ItineraryDayHeaderProps {
   title: string;
   planId: string;
   allowEdit: boolean;
+  itineraryDay: Doc<"planDetails">["itinerary"][number];
 };
 
 // 定义生成行程需要的属性

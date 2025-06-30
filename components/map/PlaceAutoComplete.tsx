@@ -11,7 +11,7 @@ import {
 } from "react";
 import { Loading } from "@/components/shared/Loading";
 import { ControllerRenderProps, UseFormReturn } from "react-hook-form";
-import { formSchemaType } from "@/components/NewPlanForm";
+import { formSchemaType } from "@/components/create/NewPlanForm";
 import AMapLoader from '@amap/amap-jsapi-loader';
 
 type PlacesAutoCompleteProps = {

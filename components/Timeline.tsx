@@ -44,7 +44,7 @@ const Timeline = ({itinerary, planId, allowEdit}: TimelineProps) => {
           </span>
 
           {/* 一天的标题 */}
-          <ItineraryDayHeader planId={planId} title={day.title} allowEdit={allowEdit} />
+          <ItineraryDayHeader planId={planId} title={day.title} allowEdit={allowEdit} itineraryDay={day}/>
           {/* 具体活动 */}
           <div className="flex flex-col gap-3">
             <Activity

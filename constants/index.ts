@@ -1,18 +1,13 @@
 export const sidebarLinks = [
     {
-        route: '/create',
-        label: '新建行程',
-        imgURL: '/icons/add.svg',
+        route: '/plans',
+        label: '生成行程',
+        imgURL: '/icons/send.svg',
     },
     {
         route: '/history',
         label: '历史行程',
         imgURL: '/icons/server.svg',
-    },
-    {
-        route: '/plans',
-        label: '生成行程',
-        imgURL: '/icons/send.svg',
     },
     {
         route: '/generate_text',

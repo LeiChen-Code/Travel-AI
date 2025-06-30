@@ -247,6 +247,76 @@ export const deletePlan = mutation({
   },
 });
 
+// 在行程表中编辑一天
+export const editDayInItinerary = mutation({
+  args: {
+    planId: v.id("planDetails"),
+    dayTitle: v.string(), // 需要编辑的那一天的 title
+    newItineraryDay: v.object({  // 新一天的内容
+      title: v.string(),
+      activities: v.object({
+        morning: v.array(
+          v.object({
+            itineraryItem: v.string(),
+            place: v.object({
+              name: v.string(),
+              coordinates: v.object({
+                lat: v.float64(),
+                lng: v.float64(),
+              }),
+            }),
+            briefDescription: v.string(),
+          })
+        ),
+        afternoon: v.array(
+          v.object({
+            itineraryItem: v.string(),
+            place: v.object({
+              name: v.string(),
+              coordinates: v.object({
+                lat: v.float64(),
+                lng: v.float64(),
+              }),
+            }),
+            briefDescription: v.string(),
+          })
+        ),
+        evening: v.array(
+          v.object({
+            itineraryItem: v.string(),
+            place: v.object({
+              name: v.string(),
+              coordinates: v.object({
+                lat: v.float64(),
+                lng: v.float64(),
+              }),
+            }),
+            briefDescription: v.string(),
+          })
+        ),
+      }),
+    }),
+  },
+  handler: async (ctx, { planId, dayTitle, newItineraryDay }) => {
+    // 获取当前登录用户身份
+    const userId = await validateUser(ctx);
+    console.log(`editDayInItinerary called by ${userId} on planId : ${planId}`);
+
+    const data = await ctx.db.get(planId);
+    if (!data) return;
+
+    // 替换指定 title 的那一天
+    // 遍历 itinerary 数组的每一天，如果day.title匹配上了，则替换掉这一天，其他天不变
+    const updatedItinerary = data.itinerary.map((day) =>
+      day.title === dayTitle ? newItineraryDay : day
+    );
+
+    await ctx.db.patch(planId, {
+      itinerary: updatedItinerary,
+    });
+  },
+});
+
 // 在行程表中多添加一天
 export const addDayInItinerary = mutation({
   args: {

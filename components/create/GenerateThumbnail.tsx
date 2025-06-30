@@ -1,11 +1,11 @@
 import { GenerateThumbnailProps } from '@/types'
 import React, { useRef, useState } from 'react'
-import { Button } from './ui/button'
+import { Button } from '../ui/button'
 import { cn } from '@/lib/utils';
 import { Label } from '@radix-ui/react-label';
-import { Textarea } from './ui/textarea';
+import { Textarea } from '../ui/textarea';
 import { Loader } from 'lucide-react';
-import { Input } from './ui/input';
+import { Input } from '../ui/input';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 import { useAction, useMutation } from 'convex/react';

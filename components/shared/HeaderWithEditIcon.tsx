@@ -2,7 +2,7 @@ import {Button} from "@/components/ui/button";
 import {PencilIcon, PlusIcon} from "lucide-react";
 import {ReactNode} from "react";
 
-// 此组件实现带图标、标题和可标记按钮的 header
+// 此组件实现带图标、标题和可编辑按钮的 header
 
 type Props = {
   icon: ReactNode;  // 传入 icon
