@@ -1,4 +1,4 @@
-import ItineraryDayHeader from "@/components/ItineraryDayHeader";
+import ItineraryDayHeader from "@/components/Itinerary/ItineraryDayHeader";
 import { TimelineProps } from "@/types";
 import { Sun, Sunrise, Sunset, TrashIcon } from "lucide-react";
 import { ReactNode } from "react";
@@ -31,7 +31,7 @@ const Timeline = ({itinerary, planId, allowEdit}: TimelineProps) => {
         // li 表示列表项 list item，定义列表中的每一项，每一天用一个 li 表示
         <li className="mb-10 ms-6" key={day.title}>
           {/* 渲染日历图标 */}
-          <span className="absolute flex items-center justify-center w-6 h-6 bg-white-1 rounded-full -start-3 ring-1 ring-white ring-gray-1">
+          <span className="absolute flex items-center justify-center w-6 h-6 bg-white-1 rounded-full -start-3 ring-1 ring-gray-1">
             <svg
               className="w-2.5 h-2.5 text-gray-4 "
               aria-hidden="true"

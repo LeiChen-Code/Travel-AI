@@ -45,9 +45,7 @@ const PlanDetails = (
           <ResizablePanel defaultSize={50} minSize={20} className='h-screen border'>
             <div className="h-full w-full overflow-auto flex items-center justify-center">
               {/* 展示行程 */}
-
                 <Plan planId={planId} isNewPlan={isNewPlan}/>
-    
             </div>
           </ResizablePanel>
 
@@ -60,9 +58,7 @@ const PlanDetails = (
               <ResizablePanel defaultSize={50} minSize={30} className='border'>
                 <div className="flex h-full items-center justify-center">
                   {/* 展示地图 */}
-
                   <Map/>
-
                 </div>
               </ResizablePanel>
 

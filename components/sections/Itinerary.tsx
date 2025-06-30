@@ -1,6 +1,6 @@
 import Timeline from "@/components/Timeline";
 import SectionWrapper from "@/components/sections/SectionWrapper";
-import {AddIternaryDay} from "@/components/addNewItineraryDay/AddItineraryDay";
+import {AddIternaryDay} from "@/components/Itinerary/AddItineraryDay";
 import {Skeleton} from "@/components/ui/skeleton";
 import {Navigation, PlusCircle, PlusCircleIcon, PlusIcon} from "lucide-react";
 import { ItineraryProps } from "@/types";

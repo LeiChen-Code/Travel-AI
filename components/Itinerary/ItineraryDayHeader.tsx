@@ -4,7 +4,7 @@ import {Button} from "@/components/ui/button";
 import {api} from "@/convex/_generated/api";
 import {useMutation} from "convex/react";
 import {TrashIcon} from "lucide-react";
-import {Id} from "../convex/_generated/dataModel";
+import {Id} from "../../convex/_generated/dataModel";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -35,7 +35,7 @@ export default function ItineraryDayHeader({title, planId, allowEdit}: Itinerary
       {allowEdit && (
         <AlertDialog open={open} onOpenChange={setOpen} >
           <AlertDialogTrigger>
-            {/* 删除按钮 */}
+            {/* 编辑按钮 */}
             <Button
               asChild
               size="icon"
