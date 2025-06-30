@@ -2,8 +2,7 @@ import React from 'react'
 import { Search } from "lucide-react";
 import { Input } from './ui/input';
 
-
-// 搜索框
+// 此组件实现搜索框
 const SearchContent = () => {
   return (
     <div className="relative ml-auto flex-1">

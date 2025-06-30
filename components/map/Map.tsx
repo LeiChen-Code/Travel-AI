@@ -64,13 +64,6 @@ const Map = () => {
         };
     }, [locations, selectedLocation]);
 
-    // 点击地名聚焦到地图
-    // useEffect(() => {
-    //     if (selectedLocation && mapInstance.current) {
-    //     mapInstance.current.setZoomAndCenter(15, selectedLocation.position);
-    //     }
-    // }, []);
-
     return(
         <div className='w-full h-full'>
             <div ref={mapRef}  style={{ width: '100%', height: '100%' }} />

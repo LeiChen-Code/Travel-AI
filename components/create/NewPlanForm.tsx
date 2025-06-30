@@ -33,6 +33,9 @@ import { redirect, useRouter } from "next/navigation"
 import { differenceInDays } from "date-fns"
 import { useAction, useMutation } from "convex/react"
 import { api } from "@/convex/_generated/api"
+import PlacesAutoComplete from "../map/PlaceAutoComplete"
+
+// 此组件实现创建行程表单的功能
 
 const travelStyles = ['悠闲', '适中', '紧凑'];
 
@@ -47,9 +50,6 @@ const FormSchema = z.object({
 export type formSchemaType = z.infer<typeof FormSchema>;
 
 const NewPlanForm = () => {
-
-    // 定义路由
-    const router = useRouter();
 
     // 设置旅行模式，判断选项是否存在
     const [travelType, setTravelType] = useState<string | undefined>(undefined);
@@ -73,6 +73,9 @@ const NewPlanForm = () => {
     // 创建行程函数
     const createplan = useMutation(api.travelplan.createPlan);
     const { toast } = useToast();
+
+    // 表示是否选择了目的地城市
+    const [selectedFromList, setSelectedFromList] = useState(false);
     
     // 定义表单
     const form = useForm<z.infer<typeof FormSchema>>({
@@ -89,7 +92,13 @@ const NewPlanForm = () => {
     // 处理表单提交后的流程
     async function onSubmit(data: z.infer<typeof FormSchema>) {
         try {
-            setIsSubmitting(true);
+            if (!selectedFromList) {
+                form.setError("travelPlace", {
+                    message: "请设置旅行目的地城市",
+                    type: "custom",
+                });
+                return;
+            }
             if(!imageURL || !imageStorageId){
                 toast({
                     title: '请上传图像作为封面',
@@ -99,6 +108,7 @@ const NewPlanForm = () => {
                 throw new Error('请上传图像作为封面');
             }
 
+            setIsSubmitting(true);
             // 调用创建行程 createPlan 接口，返回 planId
             startTransactionAiPlan(async () => {
                 // 日期校验
@@ -135,13 +145,9 @@ const NewPlanForm = () => {
                     setIsSubmitting(false);
                     return;
                 }
-                // 立即跳转
+                // 立即跳转到行程详情页
                 redirect(`/plans/${planId}?isNewPlan=true`);
             });
-
-            // toast({
-            //     title:"行程创建成功！"
-            // })
 
             
         } catch (error) {
@@ -157,7 +163,7 @@ const NewPlanForm = () => {
     return (
         // 行程标题、行程地点、行程日期、旅行人数、旅行模式、预算、行程封面
         <Form {...form}>
-            <form className="mt-8 flex w-full flex-col" onSubmit={form.handleSubmit(onSubmit)}>
+            <form className="mt-8 flex w-full flex-col">
                 <div className="flex flex-col gap-[30px] border-b border-black-5 pb-10">
                     <FormField
                         control={form.control}
@@ -178,11 +184,17 @@ const NewPlanForm = () => {
                         name="travelPlace"
                         render={({ field }) => (
                             <FormItem className="flex flex-col gap-2.5">
-                            <FormLabel className="text-16 font-medium">2.填写行程目的地</FormLabel>
-                            <FormControl>
-                                <Input placeholder="填写行程目的地" {...field} />
-                            </FormControl>
-                            <FormMessage />
+                                <FormLabel className="text-16 font-medium">2.填写行程目的地</FormLabel>
+                                <FormControl>
+                                    {/* <Input placeholder="请输入城市名" {...field} /> */}
+                                     <PlacesAutoComplete
+                                        field={field}
+                                        form={form}
+                                        selectedFromList={selectedFromList}
+                                        setSelectedFromList={setSelectedFromList}
+                                    />
+                                </FormControl>
+                                <FormMessage />
                             </FormItem>
                         )}
                     />
@@ -191,7 +203,7 @@ const NewPlanForm = () => {
                         <Label className="text-16 font-medium">
                             3.选择行程日期
                         </Label>
-                        
+                        {/* 日期选择组件组件 */}
                         <DatePickerWithRange value={range} onChange={setRange} />
                     </div>
                     
@@ -200,7 +212,7 @@ const NewPlanForm = () => {
                         name="travelPersons"
                         render={({ field }) => (
                             <FormItem className="flex flex-col gap-2.5">
-                            <FormLabel className="text-16 font-medium">4.填写同行人数，只能填数字</FormLabel>
+                            <FormLabel className="text-16 font-medium">4.填写同行人数</FormLabel>
                             <FormControl>
                                 <Input type="number" placeholder="填写旅行人数" {...field} 
                                     onChange={e => field.onChange(e.target.value === "" ? "" : Number(e.target.value))}
@@ -240,7 +252,7 @@ const NewPlanForm = () => {
                         name="budget"
                         render={({ field }) => (
                             <FormItem className="flex flex-col gap-2.5">
-                            <FormLabel className="text-16 font-medium">6.填写预算，单位为元，只能填数字</FormLabel>
+                            <FormLabel className="text-16 font-medium">6.填写预算，单位为元</FormLabel>
                             <FormControl>
                                 <Input type="number" placeholder="填写预算" {...field} 
                                     onChange={e => field.onChange(e.target.value === "" ? "" : Number(e.target.value))}
@@ -268,8 +280,8 @@ const NewPlanForm = () => {
                 </div>
                 
                 <Button 
-                    // onClick={form.handleSubmit(onSubmit)} 
-                    type="submit" 
+                    onClick={() => form.handleSubmit(onSubmit)()} 
+                    type="button" 
                     className="text-white-1"
                     disabled={pendingAIPlan}
                 >

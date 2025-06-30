@@ -13,6 +13,7 @@ import { api } from '@/convex/_generated/api';
 import { useUploadFiles } from '@xixixao/uploadstuff/react';
 import { v4 as uuidv4 } from 'uuid';
 
+// 此组件设置行程封面
 
 const GenerateThumbnail = ({
   imgPrompt,  // 图像 prompt
@@ -22,7 +23,7 @@ const GenerateThumbnail = ({
   setImageStorageId,  // 设置图像存储 ID
 } : GenerateThumbnailProps) => {
   
-  const[isAIThumbnail, setIsAIThumbnail] = useState(false);
+  const[isAIThumbnail, setIsAIThumbnail] = useState(false);  // 判断是否为 AI 生成图像
   const[isImageLoading, setIsImageLoading] = useState(false);  // 判断是否正在生成
   const imageRef = useRef<HTMLInputElement>(null);
   const generateUploadUrl = useMutation(api.files.generateUploadUrl)  // 生成 convex 云存储的上传 URL
@@ -33,14 +34,21 @@ const GenerateThumbnail = ({
   
   // AI 生成图像
   const generateImage = async () => {
+    
     try {
       const response = await handleGenerateImage({ prompt: imgPrompt });  // 文生图
       const blob = new Blob([response], { type: 'image/png' });
-      handleImage(blob, `thumbnail-${uuidv4()}`);  // 上传图像到 convex
+      await handleImage(blob, `thumbnail-${uuidv4()}`);  // 上传图像到 convex
+
+      toast({
+        title: "图像生成成功",
+      })
+      
     } catch (error) {
-      console.log(error)
-      toast({ title: '图像生成出错', variant: 'destructive'})
-    }
+      console.error("生成图像出错", error);
+      setIsImageLoading(false);
+      toast({ title: '图像生成出错', variant: 'destructive'});
+    } 
   }  
 
   // 上传图像
@@ -53,11 +61,13 @@ const GenerateThumbnail = ({
       const blob = await file.arrayBuffer()  // 将文件转为二进制数据
       .then((ab) => new Blob([ab]));
 
-      handleImage(blob, file.name);  // 将图像传到 convex 云存储
+      await handleImage(blob, file.name);  // 将图像传到 convex 云存储
+
     } catch (error) {
       console.log(error)
+      setIsImageLoading(false);
       toast({ title: '上传图像出错', variant: 'destructive'})
-    }
+    } 
   }  
 
   // 将图像存储到后端数据库
@@ -75,12 +85,10 @@ const GenerateThumbnail = ({
       const imageUrl = await getImageUrl({ storageId });  // 获取图像的 convex 可访问 url
       setImage(imageUrl!);  // 设置图像的访问 url
       setIsImageLoading(false);  // 图像加载完成
-      // 弹窗显示生成成功
-      toast({
-        title: "图像存储成功",
-      })
+      console.log("图像存储成功");
     } catch (error) {
       console.log(error)
+      setIsImageLoading(false);
       toast({ title: '图像存储出错', variant: 'destructive'})
     }
   }  
@@ -92,7 +100,9 @@ const GenerateThumbnail = ({
           type='button'
           variant='plain'
           onClick={() => setIsAIThumbnail(true)}
-          className={cn('',{'bg-white-1':isAIThumbnail})}
+          className={cn('hover:bg-gray-100 bg-white-1',{'bg-gray-200':isAIThumbnail})}
+          disabled={isAIThumbnail}
+          
         >
             AI 生成图像
         </Button>
@@ -101,7 +111,8 @@ const GenerateThumbnail = ({
           type='button'
           variant='plain'
           onClick={() => setIsAIThumbnail(false)}
-          className={cn('',{'bg-white-1':!isAIThumbnail})}
+          className={cn('hover:bg-gray-100 bg-white-1',{'bg-gray-200':!isAIThumbnail})}
+          disabled={!isAIThumbnail}
         >
             上传图像
         </Button>
@@ -121,10 +132,11 @@ const GenerateThumbnail = ({
               onChange={(e) => setImgPrompt(e.target.value)}
             />
             {/* onClick 会调用图像生成的函数 generateImage */}
-            <Button className='text-white-1 py-4 font-medium' onClick={generateImage}>
+            <Button type="button" className='text-white-1 py-4 font-medium' onClick={generateImage}>
+              {/* 根据 isImageLoading 显示不同状态*/}
               {isImageLoading ? (
                 <>
-                  生成图像
+                  生成中
                   <Loader size={20} className='animate-spin ml-2' />
                 </>
               ): (
@@ -151,7 +163,7 @@ const GenerateThumbnail = ({
               />
             ) : (
               <div className='text-16 flex-center font-medium'>
-                上传中...
+                上传中
                 <Loader size={20} className='animate-spin' />
               </div>
             )}

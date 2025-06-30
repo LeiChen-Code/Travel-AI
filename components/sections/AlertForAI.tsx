@@ -6,9 +6,9 @@ import {Loader} from "lucide-react";
 const AlertForAI = ({show}: {show: boolean}) => {
   if (!show) return null;
   return (
-    <Alert className="ring-1 ring-yellow-100 shadow-md">
+    <Alert className="px-2 py-4 border-b border-gray-100">
       <Loader className="h-4 w-4 animate-spin" />
-      <AlertTitle className="font-semibold tracking-wide text-yellow-700 dark:text-foreground">
+      <AlertTitle className="font-semibold tracking-wide text-blue-1">
         旅行计划正在生成！
       </AlertTitle>
       <AlertDescription>

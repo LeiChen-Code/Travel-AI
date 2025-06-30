@@ -32,7 +32,7 @@ const toastVariants = cva(
         // 此处可以修改 toast 样式
         default: "border bg-white-1 text-foreground",
         destructive:
-          "destructive group border-destructive bg-destructive text-destructive-foreground",
+          "bg-white-1 destructive group border-destructive text-destructive-foreground",
       },
     },
     defaultVariants: {
