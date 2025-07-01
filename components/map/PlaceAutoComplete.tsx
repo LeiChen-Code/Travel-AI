@@ -5,7 +5,6 @@ import {
   Dispatch,
   MouseEvent,
   SetStateAction,
-  useEffect,
   useRef,
   useState,
 } from "react";

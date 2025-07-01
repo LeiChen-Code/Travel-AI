@@ -1,7 +1,6 @@
 import { ConvexError, v } from "convex/values";
 import {
   ActionCtx,
-  MutationCtx,
   QueryCtx,
   action,
   internalMutation,

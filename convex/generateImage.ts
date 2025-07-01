@@ -1,5 +1,4 @@
 import { httpAction } from "./_generated/server";
-import { v } from "convex/values";
 
 export const generateImage = httpAction(async (ctx, request) => {
     

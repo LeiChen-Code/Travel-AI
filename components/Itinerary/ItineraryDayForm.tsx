@@ -10,7 +10,7 @@ import useItineraryForm from "@/hooks/useItineraryForm";
 import {ItineraryValidationSchema} from "@/components/Itinerary/ItineraryValidationSchema";
 
 import {api} from "@/convex/_generated/api";
-import {Doc, Id} from "@/convex/_generated/dataModel";
+import {Id} from "@/convex/_generated/dataModel";
 
 import {Sun, Sunrise, Sunset} from "lucide-react";
 import CustomTabContent from "@/components/Itinerary/CustomTabContent";

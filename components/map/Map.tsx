@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import AMapLoader from '@amap/amap-jsapi-loader';
 import '@amap/amap-jsapi-types';
 import { useMapContext } from '@/contexts/MapContext';

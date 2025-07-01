@@ -5,7 +5,7 @@ import HeaderWithEditIcon from "@/components/shared/HeaderWithEditIcon";
 import List from "@/components/shared/List";
 import {Skeleton} from "@/components/ui/skeleton";
 import {api} from "@/convex/_generated/api";
-import {Doc, Id} from "@/convex/_generated/dataModel";
+import {Id} from "@/convex/_generated/dataModel";
 import { PackingChecklistProps } from "@/types";
 import {useMutation} from "convex/react";
 import {Backpack} from "lucide-react";

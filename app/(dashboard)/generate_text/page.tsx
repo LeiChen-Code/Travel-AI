@@ -1,10 +1,9 @@
 "use client"
 import { Input } from '@/components/ui/input'
 import { api } from '@/convex/_generated/api'
-import { Id } from '@/convex/_generated/dataModel'
 import { useToast } from '@/hooks/use-toast'
 import { v4 as uuidv4 } from 'uuid'
-import { useAction, useMutation } from 'convex/react'
+import { useAction } from 'convex/react'
 import { Loader } from 'lucide-react'
 import Image from 'next/image'
 import React, { useEffect, useRef, useState } from 'react'
@@ -15,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { cn, convertToBase64 } from '@/lib/utils'
+import { convertToBase64 } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import ReactMarkdown from "react-markdown";
 import remarkGfm from 'remark-gfm'
