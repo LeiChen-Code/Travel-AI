@@ -10,7 +10,6 @@ import React from 'react'
 const LeftSidebar = () => {
 
     const pathname = usePathname();  // 来自导航栏的路径
-    const router = useRouter();  // 来自路由的路径
 
     return (
         <section className='left_sidebar'>

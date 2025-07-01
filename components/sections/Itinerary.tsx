@@ -2,7 +2,7 @@ import Timeline from "@/components/Timeline";
 import SectionWrapper from "@/components/sections/SectionWrapper";
 import {AddIternaryDay} from "@/components/Itinerary/AddItineraryDay";
 import {Skeleton} from "@/components/ui/skeleton";
-import {Navigation, PlusCircle, PlusCircleIcon, PlusIcon} from "lucide-react";
+import {Navigation} from "lucide-react";
 import { ItineraryProps } from "@/types";
 
 // 此组件实现行程表

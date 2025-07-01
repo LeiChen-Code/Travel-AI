@@ -1,6 +1,6 @@
 import ItineraryDayHeader from "@/components/Itinerary/ItineraryDayHeader";
 import { TimelineProps } from "@/types";
-import { Sun, Sunrise, Sunset, TrashIcon } from "lucide-react";
+import { Sun, Sunrise, Sunset } from "lucide-react";
 import { ReactNode } from "react";
 import { useMapContext } from "@/contexts/MapContext";
 import Image from "next/image";

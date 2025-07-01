@@ -32,10 +32,10 @@ export function ConvexChatProvider(
   
   // 聊天 ID = 计划 ID
   const chatId = planId;
-
+  // 初始化聊天
+  const initChat = useMutation(api.initChat.setupInitialData);
   // 如果是新创建的计划，添加欢迎消息到消息列表中
-  if (isNewPlan) {
-    const initChat = useMutation(api.initChat.setupInitialData);
+  if (isNewPlan) {  
     initChat({chatId});
   }
 
@@ -81,7 +81,7 @@ export function ConvexChatProvider(
     if (!currentInput) return;  // 输入为空，直接返回
 
     setIsLoading(true);  // 设置加载状态
-    let messageToSend = currentInput;  // 保存输入内容到 messageToSend
+    const messageToSend = currentInput;  // 保存输入内容到 messageToSend
     console.log(`Submitting message: \"${messageToSend}\"`);  // 打印信息
 
     setInput("");  // 设置用户输入

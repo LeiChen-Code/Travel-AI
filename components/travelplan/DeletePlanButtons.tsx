@@ -19,7 +19,7 @@ export default function DeletePlanButtons({planId}: {planId: string}) {
   const hanleDeletePlan = async () => {
     try {
       setIsDeleting(true);
-      const {id, dismiss} = toast({
+      const {dismiss} = toast({
         title: "删除行程",
         description: "您的行程正在删除，请稍等...",
       });

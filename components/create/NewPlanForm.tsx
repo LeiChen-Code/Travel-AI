@@ -1,13 +1,12 @@
 "use client"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { number, z } from "zod"
-import { toast, useToast } from "@/hooks/use-toast"
+import { z } from "zod"
+import { useToast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -29,9 +28,9 @@ import GenerateThumbnail from "@/components/create/GenerateThumbnail"
 import { Loader } from "lucide-react"
 import { Id } from "@/convex/_generated/dataModel"
 import { DateRange } from "react-day-picker"
-import { redirect, useRouter } from "next/navigation"
+import { redirect} from "next/navigation"
 import { differenceInDays } from "date-fns"
-import { useAction, useMutation } from "convex/react"
+import { useMutation } from "convex/react"
 import { api } from "@/convex/_generated/api"
 import PlacesAutoComplete from "../map/PlaceAutoComplete"
 
@@ -61,7 +60,7 @@ const NewPlanForm = () => {
     })
 
     // 行程是否正在生成
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [, setIsSubmitting] = useState(false);
 
     // 判断生成图像的提示词是否存在
     const [imagePrompt, setImagePrompt] = useState('');

@@ -73,7 +73,7 @@ const ItineraryDayForm = ({planId, setOpen, initialItinerary}: ItineraryDayFormP
       addItinerary({
         planId: planId as Id<"planDetails">,
         itineraryDay: data.itinerary,
-      }).then((_) => setOpen(false));
+      }).then(() => setOpen(false));
     }
   };
 

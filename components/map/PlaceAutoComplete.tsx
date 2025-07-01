@@ -35,7 +35,6 @@ type PlacesAutoCompleteProps = {
 const PlacesAutoComplete = ({
   form,
   field,
-  selectedFromList,
   setSelectedFromList,
 }: PlacesAutoCompleteProps) => {
 
