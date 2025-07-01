@@ -32,7 +32,7 @@ type EditListProps = {
 
 const EditList = ({arrayData, handleToggleEditMode, updateData}: EditListProps) => {
   // 遍历 arrayData，转换为 items 对象
-  const [items, setItems] = useState<ItemType[]>(() =>
+  const [items] = useState<ItemType[]>(() =>
     arrayData.map((item, index) => {
       return {
         itemId: index.toString(),

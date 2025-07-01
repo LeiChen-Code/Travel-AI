@@ -33,7 +33,7 @@ const EditText = ({
   updateContent,
 }: EditTextProps) => {
   // 管理文本内容
-  const [textContent, setTextContent] = useState(content || "");
+  const [textContent] = useState(content || "");
   // 实现表单状态管理和校验
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
