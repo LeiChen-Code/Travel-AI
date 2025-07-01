@@ -115,8 +115,6 @@ function ChatInner() {
             <ChatMessage
               key={message.id}
               message={message as Message}
-              messages={allMessages as Message[]}
-              isLoading={isLoading} 
             />
           ))}
           

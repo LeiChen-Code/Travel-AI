@@ -9,13 +9,9 @@ import remarkGfm from 'remark-gfm'
 
 export function ChatMessage({
   message, // 当前要渲染的消息
-  messages,  // 同一会话下的所有消息列表
-  isLoading,
   ...props
 }: {
   message: Message;
-  messages: Message[];
-  isLoading?: boolean;
 }) {
 
   return (
