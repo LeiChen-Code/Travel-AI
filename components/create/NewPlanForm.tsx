@@ -162,6 +162,7 @@ const NewPlanForm = () => {
 
     return (
         // 行程标题、行程地点、行程日期、旅行人数、旅行模式、预算、行程封面
+
         <Form {...form}>
             <form className="mt-8 flex w-full flex-col">
                 <div className="flex flex-col gap-[30px] border-b border-black-5 pb-10">
@@ -186,7 +187,6 @@ const NewPlanForm = () => {
                             <FormItem className="flex flex-col gap-2.5">
                                 <FormLabel className="text-16 font-medium">2.填写行程目的地</FormLabel>
                                 <FormControl>
-                                    {/* <Input placeholder="请输入城市名" {...field} /> */}
                                      <PlacesAutoComplete
                                         field={field}
                                         form={form}
