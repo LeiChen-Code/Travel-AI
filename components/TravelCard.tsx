@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation';
 import React from 'react'
 import DeletePlan from './travelplan/DeletePlan';
 
+// 此组件定义行程卡片
+
 const TravelCard = ({
     imgURL, title, fromDate, toDate, planId
 }: TravelCardProps) => {
