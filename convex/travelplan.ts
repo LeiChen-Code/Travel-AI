@@ -10,7 +10,6 @@ import {
 } from "./_generated/server";
 import { getIdentityOrThrow, validateUser } from "./utils";
 import { Doc, Id } from "./_generated/dataModel";
-import { useId } from "react";
 import { internal } from "./_generated/api";
 import { generatebatch1, generatebatch2, generatebatch3 } from "@/lib/openai";
 import { jsonrepair } from "jsonrepair";
@@ -241,7 +240,7 @@ export const deletePlan = mutation({
       await ctx.db.delete(planSettings?._id);
     } 
 
-    // 删除行程记录
+    // 删除 planDetails 表中的记录
     await ctx.db.delete(planId);
   },
 });

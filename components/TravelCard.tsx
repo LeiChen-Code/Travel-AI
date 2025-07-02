@@ -2,6 +2,7 @@ import { TravelCardProps } from '@/types';
 import Image from 'next/image'
 import { useRouter } from 'next/navigation';
 import React from 'react'
+import DeletePlan from './travelplan/DeletePlan';
 
 const TravelCard = ({
     imgURL, title, fromDate, toDate, planId
@@ -24,9 +25,10 @@ const TravelCard = ({
 
     return (
         // onClick 表示点击事件，点击触发 handleCard
-        <div className='cursor-pointer' onClick={handleCard}>
-            <figure className='flex flex-col gap-2'>
-                <div className='relative overflow-hidden rounded-md aspect-square w-56 bg-gray-100'>
+        <div className='cursor-pointer' >
+            <figure className='flex flex-col gap-2 p-2'>
+                <div className='relative overflow-hidden rounded-md aspect-square w-56 bg-gray-100' 
+                onClick={handleCard}>
                     <Image
                     src={imgURL}
                     width={200}
@@ -36,14 +38,19 @@ const TravelCard = ({
                     />
                 </div>
                 
-                <div className='flex flex-col'>
-                    <h1 className='text-16 truncate font-bold text-black-1'>
-                        {title}
-                    </h1>
-                    <h2 className='text-12 truncate font-normal capitalize text-black-1 mt-1'>
-                        {from}-{to}
-                    </h2>
+                <div className='flex justify-between items-center'>
+                    <div className='flex flex-col'>
+                        <h1 className='text-16 truncate font-bold text-black-1'>
+                            {title}
+                        </h1>
+                        <h2 className='text-12 truncate font-normal capitalize text-black-1 mt-1'>
+                            {from}-{to}
+                        </h2>
+                    </div>
+                    {/* 删除行程按钮 */}
+                    <DeletePlan planId={planId as string}/>
                 </div>
+
             </figure>
         </div>
     )
