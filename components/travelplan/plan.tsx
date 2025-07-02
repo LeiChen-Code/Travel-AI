@@ -10,6 +10,10 @@ import AlertForAI from "../sections/AlertForAI";
 import { useToast } from "@/hooks/use-toast";
 import { useMapContext } from "@/contexts/MapContext";
 import { useEffect, useRef } from "react";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import Weather from "../sections/Weather";
 // import Weather from "@/components/sections/Weather";
 
 // 该组件实现行程内容展示
@@ -24,6 +28,10 @@ const Plan = ({ planId, isNewPlan }: PlanProps) => {
   // 调用 usePlan hook 获取当前行程信息和行程生成的状态
   const { isLoading, plan, shouldShowAlert, error } = usePlan(planId, isNewPlan);
   const { toast } = useToast();
+
+  // 根据 planId 获取 planSettings 记录
+  const planSettings = useQuery(api.travelplan.getSinglePlan, { id: planId as Id<"planDetails"> });
+  const travelPlace = planSettings?.travelPlace;
 
   // 只弹一次 toast 的辅助 ref
   // 标记错误提示是否已经弹出
@@ -95,7 +103,8 @@ const Plan = ({ planId, isNewPlan }: PlanProps) => {
         content={plan?.abouttheplace}
         allowEdit={true}
       />
-      {/* <Weather placeName={plan?.nameoftheplace} /> */}
+
+      <Weather placeName={travelPlace} />
       
       {/* 展示行程表 */}
       <Itinerary

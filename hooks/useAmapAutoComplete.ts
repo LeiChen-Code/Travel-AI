@@ -23,6 +23,7 @@ export function useAmapAutoComplete(options?: { type?: string }) {
           // 加载插件
           const ac = new AMap.AutoComplete({
             ...options,
+            city:"全国",
           });
           setAutoComplete(ac);
         });

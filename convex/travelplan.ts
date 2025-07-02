@@ -80,6 +80,7 @@ export const getSinglePlan = query({
 
     return {
         ...plan,
+        travelPlace: planData?.travelPlace ?? "",
         travelType: planData?.travelType ?? "",
         fromDate: planData?.fromDate,
         toDate: planData?.toDate,

@@ -87,3 +87,36 @@ export interface GeneratePlanProps{
   imageURL: string,
   imageStorageId: Id<"_storage">
 }
+
+// ====== 天气数据 ======
+// 单日预报
+export interface WeatherForecastCast {
+  date: string;           // 日期
+  week: string;           // 星期
+  dayweather: string;     // 白天天气
+  nightweather: string;   // 夜间天气
+  daytemp: string;        // 白天温度
+  nighttemp: string;      // 夜间温度
+  daywind: string;        // 白天风向
+  nightwind: string;      // 夜间风向
+  daypower: string;       // 白天风力
+  nightpower: string;     // 夜间风力
+}
+
+// 预报天气响应体
+export interface WeatherForecastResponse {
+  city: string;  // 城市
+  adcode: string;  // 城市编码
+  province: string;  // 省份
+  reporttime: string;  // 预报时间
+  casts: WeatherForecastCast[];  // 多日预报情况
+}
+
+// 完整 API 响应
+export interface AmapWeatherForecastAPIResponse {
+  status: string;
+  count: string;
+  info: string;
+  infocode: string;
+  forecasts: WeatherForecastResponse[];
+}

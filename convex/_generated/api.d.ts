@@ -24,6 +24,7 @@ import type * as retrier from "../retrier.js";
 import type * as travelplan from "../travelplan.js";
 import type * as users from "../users.js";
 import type * as utils from "../utils.js";
+import type * as weather from "../weather.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -45,6 +46,7 @@ declare const fullApi: ApiFromModules<{
   travelplan: typeof travelplan;
   users: typeof users;
   utils: typeof utils;
+  weather: typeof weather;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
