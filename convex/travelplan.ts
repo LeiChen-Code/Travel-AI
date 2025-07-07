@@ -737,10 +737,9 @@ export const prepareBatch3 = action({
           };
           console.log("大模型返回的天数：", modelName.itinerary.length)
           // 更新行程表
-          const updateItinerary = useMutation(api.travelplan.update_Itinerary);
-          await updateItinerary({
-              itinerary: modelName.itinerary,
-              planId: emptyPlan._id,
+          await ctx.runMutation(api.travelplan.update_Itinerary, {
+            itinerary: modelName.itinerary,
+            planId: emptyPlan._id,
           });
         } catch (error) {
           console.error("JSON解析失败,可能模型返回了非法JSON");
