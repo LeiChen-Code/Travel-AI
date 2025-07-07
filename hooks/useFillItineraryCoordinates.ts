@@ -22,7 +22,7 @@ export function useFillItineraryCoordinates(
 
     // 当 placeSearch 或 itinerary 变化时，执行以下逻辑
     useEffect(() => {
-        if (!placeSearch || !itinerary) return;
+        if (!placeSearch || !itinerary || itinerary.length === 0) return;
 
         // 收集所有地名并去重
         const allPlaces = new Set<string>();

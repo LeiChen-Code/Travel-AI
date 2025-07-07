@@ -51,18 +51,11 @@ const Plan = ({ planId, isNewPlan }: PlanProps) => {
     }
   }, [error, toast]);
 
-
-  // 出错或行程记录为空时返回空
-  if (error || !plan) {
-    return null;
-  }
-
-
   // 调用 PlaceSearch 实例来查询行程表中的地点，并校验经纬度信息
   // ! 同时在这里更新地点列表
   const { newItinerary, isReady } = useFillItineraryCoordinates(
     travelPlace!,
-    plan.itinerary,
+    plan?.itinerary ?? [],
   );
 
   // 使用 useEffect 监听 plan 的变化，当 plan 更新时触发
@@ -76,6 +69,12 @@ const Plan = ({ planId, isNewPlan }: PlanProps) => {
     }
     // ? 此处是否还需要再一次 setLocation ?
   }, [plan, isReady, newItinerary, updateItinerary]);
+
+
+  // 出错或行程记录为空时返回空
+  if (error || !plan) {
+    return null;
+  }
 
   return (
 
