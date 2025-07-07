@@ -34,17 +34,17 @@ export function ConvexChatProvider(
   const chatId = planId;
   // 初始化聊天
   const initChat = useMutation(api.initChat.setupInitialData);
-  // 如果是新创建的计划，添加欢迎消息到消息列表中
-  if (isNewPlan) {  
-    initChat({chatId});
-  }
-
+  
   useEffect(() => {
+    // 如果是新创建的计划，添加欢迎消息到消息列表中
+    if (isNewPlan) {  
+      initChat({chatId});
+    }
     // 每当 chatId 变化时，触发 useEffect，更新 chatId
     if (typeof window !== "undefined") {
       localStorage.setItem("currentChatId", chatId);
     }
-  }, [chatId]);
+  }, [chatId, isNewPlan, initChat]);
 
   const [isLoading, setIsLoading] = useState(false);   // 加载聊天的状态
   const [isClearing, setIsClearing] = useState(false); // 清空操作的状态
