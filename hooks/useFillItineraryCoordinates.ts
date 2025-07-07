@@ -1,7 +1,7 @@
 import { usePlaceSearch } from "@/hooks/uaePlaceSearch";
 import { useMapContext } from "@/contexts/MapContext";
 import { useEffect, useState } from "react";
-import { Doc, Id } from "@/convex/_generated/dataModel";
+import { Doc } from "@/convex/_generated/dataModel";
 import { Location } from "@/types";
 
 // 该方法使用 PlaceSearch 实例来查询行程表中的地点，并校验经纬度信息

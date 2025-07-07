@@ -8,11 +8,10 @@ import PackingChecklist from "@/components/sections/PackingChecklist";
 import usePlan from "@/hooks/usePlan";
 import AlertForAI from "../sections/AlertForAI";
 import { useToast } from "@/hooks/use-toast";
-import { useMapContext } from "@/contexts/MapContext";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Doc, Id } from "@/convex/_generated/dataModel";
+import { Id } from "@/convex/_generated/dataModel";
 import Weather from "../sections/Weather";
 import { useFillItineraryCoordinates } from "@/hooks/useFillItineraryCoordinates";
 
