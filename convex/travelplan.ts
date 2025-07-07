@@ -10,9 +10,10 @@ import {
 } from "./_generated/server";
 import { getIdentityOrThrow, validateUser } from "./utils";
 import { Doc, Id } from "./_generated/dataModel";
-import { internal } from "./_generated/api";
+import { api, internal } from "./_generated/api";
 import { generatebatch1, generatebatch2, generatebatch3 } from "@/lib/openai";
 import { jsonrepair } from "jsonrepair";
+import { useMutation } from "convex/react";
 
 // 判断用户是否是该行程的管理者
 export const PlanAdmin = query({
@@ -460,7 +461,7 @@ export const update_AboutThePlace_BestTimeToVisit = internalMutation({
 });
 
 // 更新行程表到数据库
-export const update_Itinerary = internalMutation({
+export const update_Itinerary = mutation({
   args: {
     planId: v.id("planDetails"),
     itinerary: v.array(
@@ -735,7 +736,9 @@ export const prepareBatch3 = action({
             itinerary: Doc<"planDetails">["itinerary"];
           };
           console.log("大模型返回的天数：", modelName.itinerary.length)
-          await ctx.runMutation(internal.travelplan.update_Itinerary, {
+          // 更新行程表
+          const updateItinerary = useMutation(api.travelplan.update_Itinerary);
+          await updateItinerary({
               itinerary: modelName.itinerary,
               planId: emptyPlan._id,
           });

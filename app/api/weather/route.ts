@@ -21,6 +21,7 @@ async function getAdcodeByCityName(city: string): Promise<string | null> {
 
 // GET /api/weather?city=城市名
 export async function GET(req: NextRequest) {
+  
   const { searchParams } = new URL(req.url);
   const city = searchParams.get("city");
   const amapKey = process.env.AMAP_RESTAPI_KEY;

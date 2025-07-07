@@ -25,7 +25,7 @@ export function useAmapAutoComplete(options?: { type?: string }) {
             ...options,
             city:"全国",
           });
-          setAutoComplete(ac);
+          setAutoComplete(ac); // 设置插件实例
         });
       });
     });

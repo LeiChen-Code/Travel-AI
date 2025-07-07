@@ -13,7 +13,9 @@ const Weather = ({placeName}: {placeName: string | undefined}) => {
     const [weatherData, setWeatherData] = useState<WeatherForecastResponse | null>(null);
     // 加载状态
     const [loading, setLoading] = useState(false);
+    // 标记当前组件是否已经获取过数据，避免在同一次页面加载周期内对同一个城市名重复发起天气查询请求
     const [hasFetched, setHasFetched] = useState(false);
+    // 获取天气数据
     useEffect(() => {
         if (!placeName || hasFetched) return;
         setLoading(true);

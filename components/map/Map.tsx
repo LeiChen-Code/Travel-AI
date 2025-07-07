@@ -7,8 +7,11 @@ import { useMapContext } from '@/contexts/MapContext';
 const Map = () => {
     // 根据上下文获取 locations
     const { locations, selectedLocation } = useMapContext();
+    // 用于获取和保存地图容器的 DOM 引用
     const mapRef = useRef<HTMLDivElement>(null);
+    // 保存高德地图 Map 实例的引用
     const mapInstance = useRef<AMap.Map | null>(null);
+    // 保存地图上所有 Marker 的引用
     const markersRef = useRef<AMap.Marker[]>([]);
     
     useEffect(() => {
@@ -19,6 +22,7 @@ const Map = () => {
         })
         .then((AMap) => {
             if (mapRef.current) {
+                // ! center 可以改成城市
                 mapInstance.current = new AMap.Map(mapRef.current, {
                     zoom: 11,
                     center: locations[0]?.position || [116.397428, 39.90923],

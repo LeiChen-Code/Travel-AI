@@ -120,3 +120,10 @@ export interface AmapWeatherForecastAPIResponse {
   infocode: string;
   forecasts: WeatherForecastResponse[];
 }
+
+// ====== 高德地图 API 响应 ======
+// 定义地点属性
+export interface Location {
+  name: string;
+  position: [number, number]; // [lng, lat]
+}

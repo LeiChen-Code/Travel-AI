@@ -9,12 +9,12 @@ import usePlan from "@/hooks/usePlan";
 import AlertForAI from "../sections/AlertForAI";
 import { useToast } from "@/hooks/use-toast";
 import { useMapContext } from "@/contexts/MapContext";
-import { useEffect, useRef } from "react";
-import { useQuery } from "convex/react";
+import { useEffect, useRef, useState } from "react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
+import { Doc, Id } from "@/convex/_generated/dataModel";
 import Weather from "../sections/Weather";
-// import Weather from "@/components/sections/Weather";
+import { useFillItineraryCoordinates } from "@/hooks/useFillItineraryCoordinates";
 
 // 该组件实现行程内容展示
 
@@ -37,6 +37,9 @@ const Plan = ({ planId, isNewPlan }: PlanProps) => {
   // 标记错误提示是否已经弹出
   const hasShownError = useRef(false);
 
+  // 更新行程表方法
+  const updateItinerary = useMutation(api.travelplan.update_Itinerary);
+
   // 错误提示
   useEffect(() => {
     if (error && !hasShownError.current) {
@@ -49,29 +52,23 @@ const Plan = ({ planId, isNewPlan }: PlanProps) => {
     }
   }, [error, toast]);
 
+  // 调用 PlaceSearch 实例来查询行程表中的地点，并校验经纬度信息
+  // ! 同时在这里更新地点列表
+  const { newItinerary, isReady } = useFillItineraryCoordinates(
+    travelPlace!,
+    plan?.itinerary!
+  );
 
-  // !更新地点列表
-  // 调用 useMapContext 上下文 hook 中获取 setLocations 方法，更新地点列表
-  const { setLocations } = useMapContext();
   // 使用 useEffect 监听 plan 的变化，当 plan 更新时触发
   useEffect(() => {
-    if (plan) {
-      // 遍历行程的每一天
-      const locations = plan.itinerary.flatMap((day) =>
-        // 遍历一天的三个时间段
-        (['morning', 'afternoon', 'evening'] as Array<'morning' | 'afternoon' | 'evening'>).flatMap((time) =>
-          day.activities[time].map((activity) => ({
-            // 遍历每个时间段的活动，记录每个活动的地点名称和经纬度坐标
-            name: activity.place.name,
-            position: [activity.place.coordinates.lng, activity.place.coordinates.lat] as [number, number],
-          }))
-        )
-      );
-
-      // 将行程中的地点信息同步到地图上下文中
-      setLocations(locations);
+    if (isReady && newItinerary && plan) {
+      updateItinerary({
+          itinerary: newItinerary,
+          planId: planId as Id<"planDetails">, // 假设所有天数的 planId 相同
+      });
     }
-  }, [plan, setLocations]);
+    // ? 此处是否还需要再一次 setLocation ?
+  }, [plan, isReady, newItinerary, updateItinerary]);
 
   // 出错或行程记录为空时返回空
   if (error || !plan) {
@@ -104,6 +101,7 @@ const Plan = ({ planId, isNewPlan }: PlanProps) => {
         allowEdit={true}
       />
 
+      {/* 展示天气 */}
       <Weather placeName={travelPlace} />
       
       {/* 展示行程表 */}

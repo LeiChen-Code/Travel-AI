@@ -47,11 +47,14 @@ const PlanDetails = (
         await prepare1({ planId });
         await prepare2({ planId });
         await prepare3({ planId });
+        
       } catch (err) {
         console.error("调用 AI 失败", err);
       }
     };
     // 只有新建计划时才会触发AI生成
+    // ! 如果还没有加载出行程内容，要继续生成
+    // ! 刷新页面后要继续加载
     if (isNewPlan) {
       runAI();
     }
