@@ -8,7 +8,7 @@ import { Location } from "@/types";
 
 export function useFillItineraryCoordinates(
     city: string, 
-    itinerary: Doc<"planDetails">["itinerary"]
+    itinerary: Doc<"planDetails">["itinerary"],
 ) {
     // 获取地点搜索实例
     const placeSearch = usePlaceSearch({ city }); 
