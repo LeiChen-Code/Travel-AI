@@ -2,7 +2,6 @@ import { differenceInDays } from "date-fns";
 import {
   batch1Schema,
   batch2Schema,
-  batch3Schema
 } from "./schemas";
 import OpenAI from "openai";
 import { OpenAIInputType } from "@/types";
