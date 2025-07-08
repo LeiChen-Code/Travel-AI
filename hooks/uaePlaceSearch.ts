@@ -38,7 +38,7 @@ export function usePlaceSearch(options?: { city?: string }) {
             if (placeSearch) placeSearch.destroy?.();
         };
         
-    }, []);
+    }, [options]);
 
     return placeSearch;
 }

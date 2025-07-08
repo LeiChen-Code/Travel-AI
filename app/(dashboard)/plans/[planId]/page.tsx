@@ -11,8 +11,9 @@ import dynamic from "next/dynamic";
 import { MapProvider } from "@/contexts/MapContext";
 import { useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
+
 // 动态导入
-const Map = dynamic(() => import('@/components/map/Map'), {
+const MapComponent = dynamic(() => import('@/components/map/Map'), {
   ssr: false, // 关闭服务端渲染
 });
 
@@ -87,7 +88,7 @@ const PlanDetails = (
               <ResizablePanel defaultSize={50} minSize={30} className='border'>
                 <div className="flex h-full items-center justify-center">
                   {/* 展示地图 */}
-                  <Map/>
+                  <MapComponent />
                 </div>
               </ResizablePanel>
 

@@ -137,3 +137,4 @@ export interface OpenAIInputType {
   toDate?: number | undefined;
   budget?: number | undefined;
 };
+

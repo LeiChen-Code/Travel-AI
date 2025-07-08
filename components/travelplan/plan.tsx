@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useEffect, useRef } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
+import { Doc, Id } from "@/convex/_generated/dataModel";
 import Weather from "../sections/Weather";
 import { useFillItineraryCoordinates } from "@/hooks/useFillItineraryCoordinates";
 
@@ -21,6 +21,9 @@ type PlanProps = {
   planId: string;
   isNewPlan: boolean;
 };
+
+// 定义活动类型，提取行程表中活动的类型
+type Activity = NonNullable<Doc<"planDetails">["itinerary"][0]["activities"]>[keyof NonNullable<Doc<"planDetails">["itinerary"][0]["activities"]>][0];
 
 const Plan = ({ planId, isNewPlan }: PlanProps) => {
 
@@ -35,8 +38,10 @@ const Plan = ({ planId, isNewPlan }: PlanProps) => {
   // 只弹一次 toast 的辅助 ref
   // 标记错误提示是否已经弹出
   const hasShownError = useRef(false);
+  // 避免多次 updateItinerary
+  const hasUpdatedRef = useRef(false); 
 
-  // 更新行程表方法
+  // ! 更新行程表方法
   const updateItinerary = useMutation(api.travelplan.update_Itinerary);
 
   // 错误提示
@@ -53,22 +58,59 @@ const Plan = ({ planId, isNewPlan }: PlanProps) => {
 
   // 调用 PlaceSearch 实例来查询行程表中的地点，并校验经纬度信息
   // ! 同时在这里更新地点列表
-  const { newItinerary, isReady } = useFillItineraryCoordinates(
+  const { isReady, coordinatesMap } = useFillItineraryCoordinates(
     travelPlace!,
     plan?.itinerary ?? [],
   );
 
   // 使用 useEffect 监听 plan 的变化，当 plan 更新时触发
   useEffect(() => {
+    if (!isReady || !plan || !plan.itinerary || coordinatesMap.size === 0 || hasUpdatedRef.current) 
+      return;
     
-    if (isReady && newItinerary && plan) {
-      updateItinerary({
-          itinerary: newItinerary,
-          planId: planId as Id<"planDetails">, // 假设所有天数的 planId 相同
+    const updateActivities = (
+      activities: Activity[] | undefined
+    ): Activity[] => {
+      if (!activities) return [];
+
+      return activities.map((activity) => {
+        const name = activity.place?.name;
+        const coordinates = name ? coordinatesMap.get(name) : undefined;
+
+        // 只有坐标存在时才更新，否则保留原样
+        if (name && coordinates) {
+          return {
+            ...activity,
+            place: {
+              ...activity.place,
+              coordinates, 
+            },
+          };
+        }
+
+        return activity; // 保留原始 activity，避免 coordinates 为 undefined
       });
-    }
-    // ? 此处是否还需要再一次 setLocation ?
-  }, [plan, isReady, newItinerary, updateItinerary]);
+    };
+
+    // 更新行程表中的每一天的活动
+    const updatedItinerary = plan.itinerary.map((day) => ({
+      ...day,
+      activities: {
+        morning: updateActivities(day.activities.morning),
+        afternoon: updateActivities(day.activities.afternoon),
+        evening: updateActivities(day.activities.evening),
+      },
+    }));
+
+    // 更新数据库的行程表
+    updateItinerary({
+      itinerary: updatedItinerary,
+      planId: planId as Id<"planDetails">,
+    });
+
+    hasUpdatedRef.current = true;
+
+  }, [plan, isReady, coordinatesMap, updateItinerary, planId]);
 
 
   // 出错或行程记录为空时返回空

@@ -4,75 +4,102 @@ import AMapLoader from '@amap/amap-jsapi-loader';
 import '@amap/amap-jsapi-types';
 import { useMapContext } from '@/contexts/MapContext';
 
-const Map = () => {
-    // 根据上下文获取 locations
-    const { locations, selectedLocation } = useMapContext();
-    // 用于获取和保存地图容器的 DOM 引用
-    const mapRef = useRef<HTMLDivElement>(null);
-    // 保存高德地图 Map 实例的引用
-    const mapInstance = useRef<AMap.Map | null>(null);
-    // 保存地图上所有 Marker 的引用
-    const markersRef = useRef<AMap.Marker[]>([]);
-    
-    useEffect(() => {
-        AMapLoader.load({
-            key: process.env.NEXT_PUBLIC_AMAP_KEY!, // 高德地图 API Key
-            version: '2.0',
-            plugins: ["AMap.ToolBar"],  // 需要使用的插件，即缩放按钮
-        })
-        .then((AMap) => {
-            if (mapRef.current) {
-                // ! center 可以改成城市
-                mapInstance.current = new AMap.Map(mapRef.current, {
-                    zoom: 11,
-                    center: locations[0]?.position || [116.397428, 39.90923],
-                });
+const MapComponent = () => {
+  const { locations, selectedLocation } = useMapContext();
+  const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstance = useRef<AMap.Map | null>(null);
+  const markersRef = useRef<Map<string, AMap.Marker>>(new Map()); // 用 Map 维护 name->Marker 映射
 
-                // 添加缩放工具到地图上
-                const toolbar = new AMap.ToolBar();  // 创建工具条插件实例
-                if (mapInstance.current) {
-                    mapInstance.current.addControl(toolbar);  // 添加工具条到页面
-                }
+  // 1. 地图实例只初始化一次
+  useEffect(() => {
+    AMapLoader.load({
+      key: process.env.NEXT_PUBLIC_AMAP_KEY!,
+      version: '2.0',
+      plugins: ['AMap.ToolBar'],
+    }).then((AMap) => {
 
-                // 地图标记
-                const markers: AMap.Marker[] = locations.map((loc) => {
-                    const marker = new AMap.Marker({
-                        position: loc.position,
-                        title: loc.name,
-                    });
-                    marker.setMap(mapInstance.current!);
-                    
-                    // 为地图标记添加点击事件监听器，实现点击标记聚焦到该位置
-                    marker.on('click', () => {
-                        mapInstance.current?.setZoomAndCenter(15, marker.getPosition()!);
-                    });
+      if (mapRef.current && !mapInstance.current) {
+        // 创建地图实例
+        mapInstance.current = new AMap.Map(mapRef.current, {
+          zoom: 11,
+          center: locations[0]?.position || [116.397428, 39.90923],
+        });
+        // 创建工具条插件实例
+        const toolbar = new AMap.ToolBar();
+        if (mapInstance.current) {
+            mapInstance.current.addControl(toolbar);  // 添加工具条到页面
+        }
+      }
+    }).catch((e) => {
+      console.error('地图加载失败', e);
+    });
 
-                    return marker;
-                });
+    return () => {
+      mapInstance.current?.destroy();
+      mapInstance.current = null;
+      markersRef.current.clear();
+    };
+  }, []); // 依赖空数组，只初始化一次
 
-                markersRef.current = markers;
+  // 2. 根据 locations 增删 Marker，且不要重建地图
+  useEffect(() => {
+    if (!mapInstance.current) return;
 
-                if (selectedLocation && mapInstance.current) {
-                    mapInstance.current.setZoomAndCenter(16, selectedLocation.position);
-                }
-            }
-        })
-        .catch((e) => {
-            // todo: 添加 toaster
-            console.error('地图加载失败', e); 
+    const existingMarkers = markersRef.current;
+
+    // 先创建新 locations 的 marker（只创建不存在的）
+    locations.forEach((loc) => {
+      if (!existingMarkers.has(loc.name)) {
+        const marker = new AMap.Marker({
+          position: loc.position,
+          title: loc.name,
+        });
+        marker.setMap(mapInstance.current!);
+
+        marker.on('click', () => {
+          mapInstance.current?.setZoomAndCenter(15, marker.getPosition()!);
         });
 
-        return () => {
-            // 销毁当前已经存在的地图实例，释放地图实例占用的资源
-            mapInstance.current?.destroy(); 
-        };
-    }, [locations, selectedLocation]);
+        existingMarkers.set(loc.name, marker);
+      } else {
+        // 如果已经有，更新位置（如果需要）
+        const marker = existingMarkers.get(loc.name)!;
+        marker.setPosition(loc.position);
+      }
+    });
 
-    return(
-        <div className='w-full h-full'>
-            <div ref={mapRef}  style={{ width: '100%', height: '100%' }} />
-        </div>
-    )
+    // 删除 locations 不再存在的 marker
+    existingMarkers.forEach((marker, name) => {
+      if (!locations.find((loc) => loc.name === name)) {
+        marker.setMap(null);
+        existingMarkers.delete(name);
+      }
+    });
+
+    const currentCenter = mapInstance.current.getCenter();
+    const targetCenter = selectedLocation ? selectedLocation.position : locations[0]?.position;
+
+    if (targetCenter) {
+        const [lng, lat] = targetCenter;
+        if (
+        !currentCenter ||
+        Math.abs(currentCenter.lng - lng) > 0.0001 ||
+        Math.abs(currentCenter.lat - lat) > 0.0001
+        ) {
+        mapInstance.current.setZoomAndCenter(
+            selectedLocation ? 16 : 11,
+            targetCenter
+        );
+        }
+    }
+    
+  }, [locations, selectedLocation]);
+
+  return (
+    <div className="w-full h-full">
+      <div ref={mapRef} style={{ width: '100%', height: '100%' }} />
+    </div>
+  );
 };
 
-export default Map;
+export default MapComponent;
