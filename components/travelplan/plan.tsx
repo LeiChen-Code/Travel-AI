@@ -104,14 +104,6 @@ const Plan = ({ planId, isNewPlan }: PlanProps) => {
 
       {/* 展示天气 */}
       <Weather placeName={travelPlace} />
-      
-      {/* 展示行程表 */}
-      <Itinerary
-        itinerary={plan?.itinerary}
-        planId={planId}
-        isLoading={isLoading || !plan?.contentGenerationState.itinerary}
-        allowEdit={true}
-      />
 
       {/* 展示当地美食推荐 */}
       <LocalFoodRecommendations
@@ -136,6 +128,15 @@ const Plan = ({ planId, isNewPlan }: PlanProps) => {
         content={plan?.besttimetovisit}
         planId={planId}
         isLoading={isLoading || !plan?.contentGenerationState.besttimetovisit}
+        allowEdit={true}
+      />
+
+            
+      {/* 展示行程表 */}
+      <Itinerary
+        itinerary={plan?.itinerary}
+        planId={planId}
+        isLoading={isLoading || !plan?.contentGenerationState.itinerary}
         allowEdit={true}
       />
     </section>

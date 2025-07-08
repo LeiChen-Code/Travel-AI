@@ -696,6 +696,7 @@ export const prepareBatch3 = action({
         });
         // 解析 AI 响应
         const result = completion.data;
+
         // 验证生成的内容格式
         if(!batch3Schema.safeParse(result).success) {
             throw new ConvexError("生成的行程表格式不正确");
