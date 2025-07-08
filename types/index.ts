@@ -127,3 +127,13 @@ export interface Location {
   name: string;
   position: [number, number]; // [lng, lat]
 }
+
+// 定义生成行程需要的属性
+export interface OpenAIInputType {
+  userPrompt: string;
+  travelType?: string | undefined;
+  travelPersons?: number | undefined;
+  fromDate?: number | undefined;
+  toDate?: number | undefined;
+  budget?: number | undefined;
+};

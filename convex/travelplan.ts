@@ -12,8 +12,11 @@ import { getIdentityOrThrow, validateUser } from "./utils";
 import { Doc, Id } from "./_generated/dataModel";
 import { api, internal } from "./_generated/api";
 import { generatebatch1, generatebatch2, generatebatch3 } from "@/lib/openai";
-import { jsonrepair } from "jsonrepair";
-import { useMutation } from "convex/react";
+import {
+  batch1Schema,
+  batch2Schema,
+  batch3Schema
+} from "@/lib/openai/schemas";
 
 // 判断用户是否是该行程的管理者
 export const PlanAdmin = query({
@@ -573,6 +576,20 @@ const fetchEmptyPlan = async (ctx: ActionCtx, planId: string) => {
   });
 };
 
+// 获取 行程上下文信息，包括行程设置和详细记录
+async function getPlanContext(ctx: any, planId: string) {
+  const emptyPlan = await fetchEmptyPlan(ctx, planId);
+  if (!emptyPlan) throw new ConvexError("行程记录不存在");
+
+  const planMetadata = await ctx.runQuery(
+    internal.travelplan.getPlanSettings,
+    { planId: emptyPlan._id }
+  );
+  if (!planMetadata) throw new ConvexError("行程设置不存在");
+
+  return { emptyPlan, planMetadata };
+}
+
 // ==== 调用 AI 生成内容 ====
 
 // Batch1 调用 AI 生成目的地介绍（abouttheplace）和最佳旅行时间（besttimetovisit）。
@@ -582,36 +599,31 @@ export const prepareBatch1 = action({
   },
   handler: async (ctx, { planId }) => {
     try {
-        // 根据 planId 调用一个经过初始化的空行程记录
-        const emptyPlan = await fetchEmptyPlan(ctx, planId);
-
-        if (!emptyPlan) {
-            throw new ConvexError(
-                "无法找到行程记录!"
-            );
-        }
+        console.log("[prepareBatch1] 开始生成目的地介绍和最佳旅行时间", { planId });
+        // 获取空行程
+        const { emptyPlan } = await getPlanContext(ctx, planId);
 
         // 调用 generatebatch1 生成 目的地介绍 和 最佳旅行时间
         const completion = await generatebatch1(emptyPlan.userPrompt);
         // 解析 AI 的响应
-        const nameMsg = completion?.choices[0]?.message?.tool_calls?.[0].function?.arguments as string;
-
-        // 把字符串 nameMsg 解析成 JavaScript 对象
-        const modelName = JSON.parse(nameMsg) as Pick<
-            Doc<"planDetails">,
-            "abouttheplace" | "besttimetovisit"
-        >;
+        const result = completion.data;
+        // 验证生成的内容格式
+        if(!batch1Schema.safeParse(result).success) {
+            throw new ConvexError("生成的目的地介绍和最佳旅行时间格式不正确");
+        }
 
         // 调用内部接口，将生成的 目的地介绍 和 最佳旅行时间 插入数据表
         await ctx.runMutation(internal.travelplan.update_AboutThePlace_BestTimeToVisit, {
-            abouttheplace: modelName.abouttheplace,
-            besttimetovisit: modelName.besttimetovisit,
+            abouttheplace: result.abouttheplace || "",
+            besttimetovisit: result.besttimetovisit || "",
             planId: emptyPlan._id,
         });
+
     } catch (error) {
-        throw new ConvexError(
-            `Error occured in prepare Plan Convex action: ${error}`
-        );
+      console.error("生成失败:", error);
+      throw new ConvexError(
+          `生成目的地介绍和最佳旅行时间失败: ${error}`
+      );
     }
   },
 });
@@ -623,64 +635,40 @@ export const prepareBatch2 = action({
   },
   handler: async (ctx, { planId }) => {
     try {
-      console.log({ planId });
-
-      // 读取详细行程记录
-      const emptyPlan = await fetchEmptyPlan(ctx, planId);
-
-      if (!emptyPlan) {
-        console.error(
-          "无法找到行程记录!"
-        );
-        return null;
-      }
-
-      // 读取行程设置记录 
-      const planMetadata = await ctx.runQuery(
-        internal.travelplan.getPlanSettings,
-        {
-          planId: emptyPlan._id,
-        }
-      );
-
-      if (!planMetadata) {
-        console.error(
-          "无法查找到行程数据!"
-        );
-        return null;
-      }
-
-      const { travelPersons, fromDate, toDate } = planMetadata;
+      console.log("[prepareBatch2] 开始生成美食与清单", { planId });
+      
+      // 获取空行程和行程设置
+      const { emptyPlan, planMetadata } = await getPlanContext(ctx, planId);
+      const { travelType = "常规旅游", travelPersons = 1, fromDate, toDate, budget } = planMetadata;
 
       // 调用大模型生成数据
       const completion = await generatebatch2({
         userPrompt: emptyPlan.userPrompt,
+        travelType,
         travelPersons,
         fromDate,
         toDate,
+        budget,
       });
 
-      // 将 AI 的回复断言为字符串类型
-      const nameMsg = completion?.choices[0]?.message?.tool_calls?.[0].function?.arguments as string;
-
-      // 解析数据为 字段对象
-      const modelName = JSON.parse(nameMsg) as Pick<
-        Doc<"planDetails">,
-        | "localfood"
-        | "packingchecklist"
-      >;
+      // 解析 AI 响应
+      const result = completion.data;
+      // 验证生成的内容格式
+      if(!batch2Schema.safeParse(result).success) {
+        throw new ConvexError("生成的当地美食和旅行清单格式不正确");
+      }
 
       // 将生成内容插入数据表
       await ctx.runMutation(
         internal.travelplan.update_PackingChecklist_LocalFood,
         {
-          localfood: modelName.localfood,
-          packingchecklist: modelName.packingchecklist,
+          localfood: result.localfood,
+          packingchecklist: result.packingchecklist,
           planId: emptyPlan._id,
         }
       );
     } catch (error) {
-      throw new Error(`Error occured in prepare Plan Convex action: ${error}`);
+      throw new ConvexError(`生成失败: ${error}`);
     }
   },
 });
@@ -692,66 +680,37 @@ export const prepareBatch3 = action({
   },
   handler: async (ctx, { planId }) => {
     try {
-        // 获取行程记录
-        const emptyPlan = await fetchEmptyPlan(ctx, planId);
-        if (!emptyPlan) {
-            console.error(
-            "无法查找到行程记录! 请检查 planId 是否正确!"
-            );
-            return null;
-        }
-
-        // 获取行程设置记录
-        const planMetadata = await ctx.runQuery(
-            internal.travelplan.getPlanSettings,
-            {
-            planId: emptyPlan._id,
-            }
-        );
-        if (!planMetadata) {
-            console.error(
-            "无法查找到行程记录! "
-            );
-            return null;
-        }
-
-        const { travelType, travelPersons, fromDate, toDate } = planMetadata;
-
+        console.log("[prepareBatch3] 开始生成行程表", { planId });
+        
+        const { emptyPlan, planMetadata } = await getPlanContext(ctx, planId);
+        const { travelType = "常规旅游", travelPersons = 1, fromDate, toDate, budget } = planMetadata;
+        
+        // 调用大模型生成行程表
         const completion = await generatebatch3({
             userPrompt: emptyPlan.userPrompt,
             travelType,
             travelPersons,
             fromDate,
             toDate,
+            budget,
         });
-
-        // 打印日志
-        console.log("大模型返回结果：", JSON.stringify(completion, null, 2));
-
-        const nameMsg = completion?.choices[0]?.message?.tool_calls?.[0].function?.arguments as string;
-
-        try {
-          const fixedMsg = jsonrepair(nameMsg); // 修复 JSON 格式错误
-          const modelName = JSON.parse(fixedMsg) as {
-            itinerary: Doc<"planDetails">["itinerary"];
-          };
-          console.log("大模型返回的天数：", modelName.itinerary.length)
-          // 更新行程表
-          await ctx.runMutation(api.travelplan.update_Itinerary, {
-            itinerary: modelName.itinerary,
-            planId: emptyPlan._id,
-          });
-        } catch (error) {
-          console.error("JSON解析失败,可能模型返回了非法JSON");
-          console.error("nameMsg内容:", nameMsg);
-          throw new ConvexError(`Invalid JSON from model. Message: ${error}`);
+        // 解析 AI 响应
+        const result = completion.data;
+        // 验证生成的内容格式
+        if(!batch3Schema.safeParse(result).success) {
+            throw new ConvexError("生成的行程表格式不正确");
         }
 
+        console.log("大模型返回的天数：", result.itinerary.length)
+
+        // 更新行程表
+        await ctx.runMutation(api.travelplan.update_Itinerary, {
+          itinerary: result.itinerary,
+          planId: emptyPlan._id,
+        });
 
     } catch (error) {
-        throw new ConvexError(
-            `Error occured in prepare Plan Convex action: ${error}`
-        );
+        throw new ConvexError(`生成失败: ${error}`);
     }
   },
 });
