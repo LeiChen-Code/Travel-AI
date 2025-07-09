@@ -4,15 +4,13 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable"
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Chat } from '@/components/chat/chat';
 import Plan from '@/components/travelplan/plan';
 import dynamic from "next/dynamic";
 import { MapProvider } from "@/contexts/MapContext";
 import { useAction, useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
-import { useFillItineraryCoordinates } from "@/hooks/useFillItineraryCoordinates";
 
 
 // 动态导入
