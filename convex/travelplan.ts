@@ -118,6 +118,7 @@ export const createPlan = mutation({
         
         // newPlan 相当于 planId
         const newPlan = await ctx.db.insert("planDetails",{
+            coordinatesFilled: false,
             userPrompt: `去 ${args.travelPlace} 旅行 ${args.noOfDays} 天`,  // 初始化 prompt
             abouttheplace:"",
             packingchecklist: [],
@@ -713,6 +714,58 @@ export const prepareBatch3 = action({
     } catch (error) {
         throw new ConvexError(`生成失败: ${error}`);
     }
+  },
+});
+
+
+// =========== 更新行程 带坐标校验 ===============
+export const updatePlanWithCoordinates = mutation({
+  args: {
+    planId: v.id("planDetails"),
+    locations: v.array(
+      v.object({
+        name: v.string(),
+        position: v.object({ lat: v.float64(), lng: v.float64() }),
+      })
+    ),
+  },
+  handler: async (ctx, args) => {
+    const plan = await ctx.db.get(args.planId);
+    if (!plan) throw new Error("Plan not found");
+
+    const locations = args.locations;
+    let locIndex = 0;
+
+    const updatedItinerary = plan.itinerary.map((day) => {
+      const timeSlots = ["morning", "afternoon", "evening"] as const;
+
+      timeSlots.forEach((time) => {
+        day.activities[time] = day.activities[time].map((activity) => {
+          const loc = locations[locIndex];
+          locIndex++;
+
+          if (loc) {
+            activity.place = {
+              ...activity.place,
+              name: loc.name, // 更新地名
+              coordinates: {
+                lng: loc.position.lng,
+                lat: loc.position.lat,
+              },
+            };
+          }
+
+          return activity;
+        });
+      });
+
+      return day;
+    });
+
+    await ctx.db.patch(args.planId, {
+      itinerary: updatedItinerary,
+      coordinatesFilled: true,
+    });
   },
 });
 

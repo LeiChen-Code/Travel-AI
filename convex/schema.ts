@@ -3,6 +3,7 @@ import { v } from "convex/values";
 
 export default defineSchema({
     planDetails:defineTable({
+        coordinatesFilled: v.optional(v.boolean()),  // 标记是否经过了 坐标校验
         isGeneratedUsingAI: v.boolean(),
         userPrompt: v.string(),  // prompt
         abouttheplace: v.string(),  // 旅游地点介绍

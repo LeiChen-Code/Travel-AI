@@ -9,7 +9,7 @@ import usePlan from "@/hooks/usePlan";
 import AlertForAI from "../sections/AlertForAI";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect, useRef } from "react";
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import Weather from "../sections/Weather";
@@ -31,9 +31,12 @@ const Plan = ({ planId, isNewPlan }: PlanProps) => {
   const { toast } = useToast();
 
   // 根据 planId 获取 planSettings 记录
-  const planSettings = useQuery(api.travelplan.getSinglePlan, { id: planId as Id<"planDetails"> });
-  const travelPlace = planSettings?.travelPlace;
+  const travelPlace = plan?.travelPlace;
 
+  // 更新行程坐标
+  const updateCoordinates = useMutation(api.travelplan.updatePlanWithCoordinates);
+  const hasRunCoordinateFill = useRef(false); // 防止 useEffect 内重复执行
+  
   // 只弹一次 toast 的辅助 ref
   // 标记错误提示是否已经弹出
   const hasShownError = useRef(false);
@@ -59,6 +62,12 @@ const Plan = ({ planId, isNewPlan }: PlanProps) => {
     const run = async () => {
       if (!travelPlace || !plan) return;
 
+      // 只在 itinerary 生成完成并且还未填过坐标时触发
+      if (plan.contentGenerationState?.itinerary !== true) return;
+      if (hasRunCoordinateFill.current) return;
+
+      hasRunCoordinateFill.current = true;
+
       // 提取 locations
       const rawLocations = plan.itinerary.flatMap((day) =>
         (['morning', 'afternoon', 'evening'] as const).flatMap((time) =>
@@ -72,26 +81,35 @@ const Plan = ({ planId, isNewPlan }: PlanProps) => {
         )
       );
 
-      // 执行坐标校验
-      const updatedLocations = await fillCoordinatesForItinerary(travelPlace, rawLocations);
+      let updatedLocations = rawLocations;
 
-      // 去重（避免重复点）
-      const uniqueMap = new Map<string, [number, number]>();
-      for (const loc of updatedLocations) {
-        if (!uniqueMap.has(loc.name)) {
-          uniqueMap.set(loc.name, loc.position!);
-        }
+      if (!plan.coordinatesFilled){
+        // 执行坐标校验
+        updatedLocations = await fillCoordinatesForItinerary(travelPlace, rawLocations);
+
+        // 转为对象格式
+        const finalLocations = updatedLocations.map((loc) => ({
+          name: loc.name,
+          position: {
+            lng: loc.position[0],
+            lat: loc.position[1],
+          },
+        }));
+
+        // 更新行程数据库
+        await updateCoordinates({
+          planId: planId as Id<"planDetails">,
+          locations: finalLocations,
+        });
+
       }
+      
+      setLocations(updatedLocations);
 
-      // 写入 MapContext
-      const dedupedLocations = Array.from(uniqueMap.entries()).map(([name, position]) => ({
-        name,
-        position,
-      }));
-      setLocations(dedupedLocations);
     };
 
     run();
+    
   }, [plan, setLocations, travelPlace]);
 
 

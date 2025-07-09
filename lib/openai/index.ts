@@ -84,7 +84,7 @@ const PROMPT_BATCH3 = (prompt: string) => `
 - 每天包含上午/下午/晚上的活动
 - 每个活动必须包含：
   - itineraryItem: 活动名称（如"参观雷峰塔"）
-  - place.name: 地点名称（精确到具体景区）
+  - place.name: 地点名称（必须是景区、景点、街道、地标或行政区划名称，**禁止推荐酒店、餐厅、商场等非景点类场所**）
   - place.coordinates: 经纬度（可估算）
   - briefDescription: 简要说明（要求：**不少于100字**，需包含以下内容）
     1. 景点历史背景（如"始建于南宋，重建于2002年"）
