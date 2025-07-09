@@ -4,19 +4,21 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable"
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Chat } from '@/components/chat/chat';
 import Plan from '@/components/travelplan/plan';
 import dynamic from "next/dynamic";
 import { MapProvider } from "@/contexts/MapContext";
-import { useAction } from "convex/react";
+import { useAction, useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import { useFillItineraryCoordinates } from "@/hooks/useFillItineraryCoordinates";
+
 
 // 动态导入
 const MapComponent = dynamic(() => import('@/components/map/Map'), {
   ssr: false, // 关闭服务端渲染
 });
-
 
 const PlanDetails = (
   {
@@ -35,10 +37,12 @@ const PlanDetails = (
       ? Boolean(searchParams.isNewPlan)
       : false;
 
+
   // 调用函数
   const prepare1 = useAction(api.travelplan.prepareBatch1);
   const prepare2 = useAction(api.travelplan.prepareBatch2);
   const prepare3 = useAction(api.travelplan.prepareBatch3);
+ 
 
   // 页面一加载就自动开始 AI 生成行程内容
   useEffect(() => {
@@ -48,7 +52,6 @@ const PlanDetails = (
         await prepare1({ planId });
         await prepare2({ planId });
         await prepare3({ planId });
-        
       } catch (err) {
         console.error("调用 AI 失败", err);
       }

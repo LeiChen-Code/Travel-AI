@@ -50,12 +50,14 @@ const MapComponent = () => {
     // 先创建新 locations 的 marker（只创建不存在的）
     locations.forEach((loc) => {
       if (!existingMarkers.has(loc.name)) {
+        // 实例化 marker
         const marker = new AMap.Marker({
           position: loc.position,
           title: loc.name,
         });
         marker.setMap(mapInstance.current!);
 
+        // 为地图标记添加点击事件监听器，实现点击标记聚焦到该位置
         marker.on('click', () => {
           mapInstance.current?.setZoomAndCenter(15, marker.getPosition()!);
         });

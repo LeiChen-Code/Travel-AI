@@ -1,5 +1,4 @@
-import { usePlaceSearch } from "@/hooks/uaePlaceSearch";
-import { useMapContext } from "@/contexts/MapContext";
+import { usePlaceSearch } from "@/hooks/usePlaceSearch";
 import { useEffect, useRef, useState } from "react";
 import { Doc } from "@/convex/_generated/dataModel";
 
@@ -10,8 +9,6 @@ export function useFillItineraryCoordinates(
   itinerary: Doc<"planDetails">["itinerary"]
 ) {
   const placeSearch = usePlaceSearch({ city });
-  const { locations, setLocations } = useMapContext();
-
   const [isReady, setIsReady] = useState(false);
   const coordinatesMapRef = useRef(new Map<string, { lat: number; lng: number }>());
 
@@ -46,9 +43,6 @@ export function useFillItineraryCoordinates(
             const lng = poi.location.getLng();
             const lat = poi.location.getLat();
             coordinatesMapRef.current.set(name, { lat, lng });
-
-            const newLocation = { name, position: [lng, lat] as [number, number] };
-            setLocations([...locations, newLocation]);
           }
           resolve();
         });
@@ -63,7 +57,7 @@ export function useFillItineraryCoordinates(
     };
 
     runSequential();
-  }, [placeSearch, itinerary, city]);
+  }, [itinerary]);
 
   return { isReady, coordinatesMap: coordinatesMapRef.current };
 }

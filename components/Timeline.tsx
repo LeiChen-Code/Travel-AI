@@ -87,7 +87,7 @@ const Activity = ({
   icon: ReactNode;
 }) => {
   // 设置点击地名的状态
-  const { setSelectedLocation } = useMapContext();
+  const { setSelectedLocation, locations } = useMapContext();
   
   if (activity.length == 0) return null;
   return (
@@ -120,10 +120,18 @@ const Activity = ({
                       width={18}
                       height={18}
                     />
-                    <span className="cursor-pointer" onClick={() => setSelectedLocation({
+                    <span className="cursor-pointer" onClick={() => {
+                      const updated = locations.find(loc => loc.name === act.place.name);
+                      const position = updated?.position ?? [
+                        act.place.coordinates.lng,
+                        act.place.coordinates.lat,
+                      ];
+
+                      setSelectedLocation({
                         name: act.place.name,
-                        position: [act.place.coordinates.lng, act.place.coordinates.lat],
-                      })}>
+                        position,
+                      });
+                    }}>
                       {act.place.name}
                     </span>
                   </div>
