@@ -9,7 +9,7 @@ import { Chat } from '@/components/chat/chat';
 import Plan from '@/components/travelplan/plan';
 import dynamic from "next/dynamic";
 import { MapProvider } from "@/contexts/MapContext";
-import { useAction, useMutation, useQuery } from "convex/react";
+import { useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
 
 
